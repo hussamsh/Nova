@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow , globalShortcut} from "electron";
 import * as path from "path";
 
 let mainWindow: Electron.BrowserWindow;
@@ -14,10 +14,10 @@ function createWindow() {
   });
 
   // and load the index.html of the app.
-  mainWindow.loadFile(path.join(__dirname, "../index.html"));
+  mainWindow.loadFile(path.join(__dirname, "../app/index.html"));
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 
   // Emitted when the window is closed.
   mainWindow.on("closed", () => {
@@ -26,6 +26,19 @@ function createWindow() {
     // when you should delete the corresponding element.
     mainWindow = null;
   });
+
+
+  globalShortcut.register('CommandOrControl+R', function() {
+		mainWindow.reload()
+  })
+  
+  // globalShortcut.register('CommandOrControl+W', function() {
+	// 	mainWindow.close()
+  // })
+  
+  globalShortcut.register('CommandOrControl+Shift+I', function() {
+		mainWindow.webContents.openDevTools();
+	})
 }
 
 // This method will be called when Electron has finished
