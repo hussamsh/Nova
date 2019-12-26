@@ -4,4 +4,9 @@ html,body{
     overflow-x: hidden;
     overflow-y: hidden;
     height: 100%;
+    padding: 20px;
+}
+
+span{
+    color : #b91400
 }

@@ -6,11 +6,11 @@ let mainWindow: Electron.BrowserWindow;
 function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    height: 500,
+    height: 600,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
-    width: 500,
+    width: 800,
     frame : false
   });
 
@@ -33,9 +33,9 @@ function createWindow() {
 		mainWindow.reload()
   })
   
-  // globalShortcut.register('CommandOrControl+W', function() {
-	// 	mainWindow.close()
-  // })
+  globalShortcut.register('CommandOrControl+W', function() {
+		mainWindow.close()
+  })
   
   globalShortcut.register('CommandOrControl+Shift+I', function() {
 		mainWindow.webContents.openDevTools();
