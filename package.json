@@ -1,8 +1,8 @@
 {
-  "name": "electron-custom-boilerplate",
-  "version": "1.0.0",
+  "name": "Nova",
+  "version": "0.0.1",
   "main": "dist/main.js",
-  "description": "Personal configuration for a barebone electron app",
+  "description": "Desktop application that implements different kinds of cryptographic algorithms",
   "scripts": {
     "build": "webpack --config webpack.config.js",
     "watch": "webpack --config webpack.config.js -w",
