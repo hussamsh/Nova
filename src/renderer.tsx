@@ -1,31 +1,42 @@
 // This file is required by the index.html file and will
 // be executed in the renderer process for that window.
 // All of the Node.js APIs are available in this process.
+
+import 'animate.css/animate.min.css'
+
 import React from 'react'
 import ReactDOM from 'react-dom'
+import TopControlButtons from "./components/TopControlButtons";
+import ControlsPanel from './components/ControlsPanel';
+
+
 
 ReactDOM.render(
-    <div>
-        <h1>Hello World, It Works !</h1>
-        <p style={{fontSize:20}}>This project is setup with <span>Electron</span> , <span>Typescript</span> , <span>Webpack</span> and <span>React</span></p>
-        <div style={{fontSize:12}}>
-            <p>Dont forget to run 
-            <span style={{marginLeft : 10, marginRight: 10}}>
-                <code >
-                    npm update
-                </code>
-            </span>
-            to get the latest packages and 
-            <span style={{marginLeft : 10, marginRight: 10}}>
-                <code >
-                    npm run watch
-                </code>
-            </span>
-            to complie the files
-            </p>
+    <div className="container-fluid" style={{height:'inherit'}}>
+        <div className="row" style={{height:'inherit'}}>
+            
+        <div className="col-9" style={{backgroundColor:"#22262a"}}>
+
         </div>
+
+        <div className="col-3" style={{backgroundColor:"#2a2e34", padding:"0px", margin:"0px"}}>
+            <div className="top-bar">
+                <TopControlButtons />
+                <div className="row align-items-center justify-content-center logo-container">
+                        <img className="ui image logo" src="./assets/images/logo-name.png"/>
+                </div>                
+            </div>
+            
+            <ControlsPanel>
+                
+            </ControlsPanel>
+
+
+
+        </div>
+
+        </div>
+        
     </div>
     
     , document.getElementById('main'));
-
-console.log("Hello from renderer script");
