@@ -1,6 +1,7 @@
 import * as React from 'react';
-import $ from 'jquery';
 import styled from 'styled-components';
+import Palette from "../palette";
+
 
 const Container = styled.div`
     position: relative;
@@ -11,11 +12,11 @@ const Container = styled.div`
 const Button = styled.div`
     display: flex;
     align-items: center;
-    font-weight: 300;
     color: white;
     font-size: 0.9em;
+    font-weight: 500;
     padding: 10px;
-    border: 1.5px solid #7a7e84;
+    border: 1.5px solid ${Palette.grayBorderColor};
     border-radius: 10px;
     cursor: pointer;
 
@@ -26,7 +27,8 @@ const Button = styled.div`
 `
 
 const Content = styled.div`
-    position: absolute;
+    position: absolute; 
+    background-color : ${Palette.sidePanel};
     width: 100%;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
@@ -45,6 +47,7 @@ const Content = styled.div`
         color: #ffffe4;
         padding: 5px;
         font-size: 0.9em;
+        font-weight: 300;
         padding-left: 10px;
         display: block;
         cursor : pointer;
@@ -53,7 +56,6 @@ const Content = styled.div`
             background-color: #ddd
         }
     }
-
 `
 
 class DropDown extends React.Component<{ items : Array<String> , onClick : Function} , {}> {
@@ -82,6 +84,11 @@ class DropDown extends React.Component<{ items : Array<String> , onClick : Funct
                 </Container>
             </div>
         )
+    }
+
+
+    dosmth(){
+        console.log("Did smth");
     }
 
     componentDidMount() {
