@@ -4,9 +4,13 @@ import styled from 'styled-components';
 import ParametersPanel from './ParametersPanel';
 import Button from './Button';
 import EncryptionTypes from '../nova/EncryptionTypes';
+import PathLabeledInput from './PathLabeledInput';
+import { EncryptionAlgorithm } from '../interfaces/EncryptionAlgorithm';
+
 
 const Container = styled.div`
     padding : 15px;
+    overflow-y: visible;
 `
 
 const EnceryptionLabel = styled.p`
@@ -51,21 +55,22 @@ const ButtonWrapper = styled.div`
 
 `
  
-class ControlsPanel extends React.Component<{} , {equation : String ,params : Array<{symbol : String , name: String}>}> {
-
-    alogrithms = EncryptionTypes.algorithms;
+class ControlsPanel extends React.Component<{availableAlgorithms : Array<EncryptionAlgorithm>, onEcnryptButtonClicked : Function , onDecryptButtonClicked : Function} , {equation : String ,params : Array<{symbol : String , name: String}>}> {
     
-    names = this.alogrithms.map((element) => {
+    names = this.props.availableAlgorithms.map((element) => {
         return element.getName();
     });
 
-    selectedAlgorithm = this.alogrithms[0];
+    selectedAlgorithm = this.props.availableAlgorithms[0];
+
+    parametersPanelRef = React.createRef<ParametersPanel>();
+    outputPathInput = React.createRef<PathLabeledInput>();
     
     constructor(props){
         super(props);
         this.state = {
             equation : this.selectedAlgorithm.getEquation(),
-            params : this.selectedAlgorithm.getParameters()
+            params : this.selectedAlgorithm.getParameters(),
         }
     }
 
@@ -88,11 +93,18 @@ class ControlsPanel extends React.Component<{} , {equation : String ,params : Ar
                     
                     <Hr></Hr>
                     
-                    <ParametersPanel  params={this.state.params}/>
+                    <ParametersPanel  ref={this.parametersPanelRef} params={this.state.params}/>
+
+                    <Hr></Hr>
+
+                    <PathLabeledInput ref={this.outputPathInput}/>
+
+                    <Hr></Hr>
+
 
                     <ButtonWrapper>
-                        <Button onClick={() => console.log("Encrypt clicked")}> <i className="fas fa-fingerprint"></i> Encrypt</Button>
-                        <Button onClick={() => console.log("Decrypt clicked")} style={{marginTop: "10px"}}> <i className="far fa-image"></i> Decrypt</Button>
+                        <Button onClick={() => this.props.onEcnryptButtonClicked()}> <i className="fas fa-fingerprint"></i> Encrypt</Button>
+                        <Button onClick={() => this.props.onDecryptButtonClicked()} style={{marginTop: "10px"}}> <i className="far fa-image"></i> Decrypt</Button>
                     </ButtonWrapper>
                   
                 </div>      
@@ -101,11 +113,27 @@ class ControlsPanel extends React.Component<{} , {equation : String ,params : Ar
     }
 
     onEncryptionTypeSelected(index){
-        this.selectedAlgorithm = this.alogrithms[index]
+        this.selectedAlgorithm = this.props.availableAlgorithms[index]
         this.setState({
             equation : this.selectedAlgorithm.getEquation(),
             params : this.selectedAlgorithm.getParameters()
         });        
+    }
+
+    getInputData(){
+        let inputParams = this.parametersPanelRef.current.getParamsInput();
+        let outputPath = this.outputPathInput.current.getPath();
+
+        return {
+            "selectedAlgorithm" : this.selectedAlgorithm.getName(),
+            "inputParams" : inputParams,
+            "outputParams" : outputPath
+        }
+
+    }
+
+    showMissingValueMessage(name : String){
+        this.parametersPanelRef.current.showMissingValueMessage(name);
     }
 
     componentDidUpdate(prevProps , prevState) {

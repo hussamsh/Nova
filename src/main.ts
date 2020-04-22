@@ -1,4 +1,4 @@
-import { app, BrowserWindow , globalShortcut} from "electron";
+import { app, BrowserWindow , globalShortcut, dialog, ipcMain} from "electron";
 import * as path from "path";
 
 let mainWindow: Electron.BrowserWindow;
@@ -9,6 +9,7 @@ function createWindow() {
     height: 600,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
+      nodeIntegration: true,
     },
     width: 800,
     frame : false
@@ -66,3 +67,15 @@ app.on("activate", () => {
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
+
+
+ipcMain.on('select-dirs', async (event, arg) => {
+  const result = await dialog.showOpenDialog(mainWindow, {
+    properties: ['openDirectory']
+  })
+
+  if(result.filePaths.length != 0){
+    event.reply('folder-selected' , result.filePaths[0]);
+  }
+
+})

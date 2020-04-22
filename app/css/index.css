@@ -30,7 +30,23 @@ html,body{
     -webkit-app-region: no-drag;
 }
     
+.tippy-box[data-theme~='warning'] {
+    background-color: red;
+    color: white;
+  }
 
+  .tippy-box[data-theme~='warning'][data-placement^='top'] > .tippy-arrow::before {
+    border-top-color: red;
+  }
+  .tippy-box[data-theme~='warning'][data-placement^='bottom'] > .tippy-arrow::before {
+    border-bottom-color: red;
+  }
+  .tippy-box[data-theme~='warning'][data-placement^='left'] > .tippy-arrow::before {
+    border-left-color: red;
+  }
+  .tippy-box[data-theme~='warning'][data-placement^='right'] > .tippy-arrow::before {
+    border-right-color: red;
+  }
 
 /* #content-wrapper > * {
     

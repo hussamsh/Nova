@@ -6,7 +6,7 @@ class EncryptionTypes {
     public static readonly DH = new DH();
     public static readonly Logistic = new Logistic();
 
-    public static algorithms : Array<EncryptionAlgorithm>= [
+    public static algorithms : Array<EncryptionAlgorithm> = [
         EncryptionTypes.DH,
         EncryptionTypes.Logistic
     ]

@@ -12,7 +12,7 @@ const StyledButton = styled.button`
     padding-right : 10px;
     /* font-family : "Montserrat"; */
     font-weight : 900;
-    color : #212121;
+    color : ${Palette.materialBlack};
     background-color : ${Palette.accentColor};
 
     &:focus{

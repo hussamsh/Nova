@@ -1,7 +1,9 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import Palette from '../palette';
-
+import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css'; 
+import 'tippy.js/animations/shift-away.css'
 
 const TextLabel = styled.p`
     background-color : ${Palette.gray};
@@ -40,15 +42,26 @@ const Wrapper = styled.div`
     
 `
 
-class LabeledTextInput extends React.Component<{ label : String , style ?: Object}, {}> {
+class LabeledTextInput extends React.Component<{name : String, label : String , style ?: Object , type : string , onChange ?: Function}, {}> {
 
     private wrapperRef = React.createRef<HTMLDivElement>();
+
+    private tippyElement ;
 
     render() { 
         return ( 
             <Wrapper style={this.props.style} id="labeled-text-wrapper" ref={this.wrapperRef}>
-                <TextLabel >{this.props.label}</TextLabel>
-                <Input type="text" onBlur={() => {this.onBlurred()}} onFocus={() => {this.onFocused()}}/>
+                <Tippy 
+                    onCreate={ tip => {this.tippyElement = tip}}
+                    content="Missing value"
+                    theme="warning"
+                    placement="left"
+                    animation="shift-away"
+                    trigger="manual"
+                >
+                    <TextLabel >{this.props.label}</TextLabel>
+                </Tippy>
+                <Input type={this.props.type} onChange={(e) => this.props.onChange(e)} onBlur={() => {this.onBlurred()}} onFocus={() => {this.onFocused()}}/>
             </Wrapper>
          );
     }
@@ -59,6 +72,10 @@ class LabeledTextInput extends React.Component<{ label : String , style ?: Objec
 
     onBlurred(){
         this.wrapperRef.current.style.borderColor = Palette.grayBorderColor;
+    }
+
+    triggerTooltip(){
+        this.tippyElement.show();
     }
 
 }
