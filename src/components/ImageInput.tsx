@@ -2,6 +2,9 @@ import * as React from 'react';
 import styled from 'styled-components';
 import Palette from '../palette';
 const { dialog  } = require('electron').remote
+import Tippy, { tippy } from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css'; 
+import 'tippy.js/animations/shift-away.css'
 
 const DragDropImage = styled.img`
     height : 90px;
@@ -38,6 +41,7 @@ const MainWrapper = styled.div`
     width : 100%;
     height : 100%;
     overflow: hidden;
+    padding:20px;
 `
 
 const ImageMain = styled.img`
@@ -50,21 +54,35 @@ const ImageMain = styled.img`
 export default class ImageInput extends React.Component {
   
     placeHolderVisible : boolean = true;
-    mainImage : HTMLImageElement;
+    mainImageElement : HTMLImageElement;
+    private tippyElement;
+
   
     render() {
         return (
-            <MainWrapper id="drag-area">
-                
-                <PlaceholderWrapper id="placeholder-wrapper">
-                    <DragDropImage src="./assets/images/drag-drop.png" />
-                    <PlaceholderText>Drag & Drop your desired image <br/> or <span onClick={() => this.showFilePickerDialog()}>Browse</span></PlaceholderText>
-                </PlaceholderWrapper>
-                
+            
+                <MainWrapper id="drag-area"> 
+                    <PlaceholderWrapper id="placeholder-wrapper">
+                        <DragDropImage src="./assets/images/drag-drop.png" />
 
-                <ImageMain id="image-main"  />
-                
-            </MainWrapper>
+                        <Tippy 
+                            onCreate={ tip => {this.tippyElement = tip}}
+                            theme="warning"
+                            placement="bottom"
+                            animation="shift-away"
+                            trigger="manual"
+                        >
+                            <PlaceholderText>Drag & Drop your desired image <br/> or <span onClick={() => this.showFilePickerDialog()}>Browse</span></PlaceholderText>
+                        </Tippy>
+
+                    </PlaceholderWrapper>
+                    
+                    
+                    <ImageMain id="image-main"  />
+
+                        
+                </MainWrapper>
+            
         );
     }
 
@@ -87,7 +105,7 @@ export default class ImageInput extends React.Component {
     }
 
     componentDidMount() {
-        this.mainImage = document.getElementById("image-main") as HTMLImageElement
+        this.mainImageElement = document.getElementById("image-main") as HTMLImageElement
         let dragArea = document.getElementById("drag-area");
 
 
@@ -128,13 +146,19 @@ export default class ImageInput extends React.Component {
             this.placeHolderVisible = false;
         }
 
-        this.mainImage.src = source;
-        this.mainImage.style.display = "block";
+        this.mainImageElement.src = source;
+        this.mainImageElement.style.display = "block";
     }
 
 
     getImagePath(){
-        return this.mainImage.src;
+        return this.mainImageElement.src;
+    }
+
+
+    triggerErrorTooltip(message : String){
+        this.tippyElement.setContent(message);
+        this.tippyElement.show();
     }
 
 }

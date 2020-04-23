@@ -1,15 +1,12 @@
 import React from 'react';
 import DropDown from './DropDown';
 import styled from 'styled-components';
-import ParametersPanel from './ParametersPanel';
-import Button from './Button';
-import EncryptionTypes from '../nova/EncryptionTypes';
-import PathLabeledInput from './PathLabeledInput';
+import ParametersInputSection from './ParametersInputSection';
+import OutputPathSelectSection from './OutputPathSelectSection';
 import { EncryptionAlgorithm } from '../interfaces/EncryptionAlgorithm';
 
 
 const Container = styled.div`
-    padding : 15px;
     overflow-y: visible;
 `
 
@@ -48,14 +45,9 @@ const Hr =  styled.hr`
     border-top : 2px solid #7a7e84;
 `
 
-const ButtonWrapper = styled.div`
-    display: flex;
-    flex-direction : column;
-    margin-top : 20px;
 
-`
  
-class ControlsPanel extends React.Component<{availableAlgorithms : Array<EncryptionAlgorithm>, onEcnryptButtonClicked : Function , onDecryptButtonClicked : Function} , {equation : String ,params : Array<{symbol : String , name: String}>}> {
+class RightPanel extends React.Component<{availableAlgorithms : Array<EncryptionAlgorithm>} , {equation : String ,params : Array<{symbol : String , name: String}>}> {
     
     names = this.props.availableAlgorithms.map((element) => {
         return element.getName();
@@ -63,8 +55,8 @@ class ControlsPanel extends React.Component<{availableAlgorithms : Array<Encrypt
 
     selectedAlgorithm = this.props.availableAlgorithms[0];
 
-    parametersPanelRef = React.createRef<ParametersPanel>();
-    outputPathInput = React.createRef<PathLabeledInput>();
+    parametersInputSectionRef = React.createRef<ParametersInputSection>();
+    outputPathSelectRef = React.createRef<OutputPathSelectSection>();
     
     constructor(props){
         super(props);
@@ -93,19 +85,13 @@ class ControlsPanel extends React.Component<{availableAlgorithms : Array<Encrypt
                     
                     <Hr></Hr>
                     
-                    <ParametersPanel  ref={this.parametersPanelRef} params={this.state.params}/>
+                    <ParametersInputSection  ref={this.parametersInputSectionRef} params={this.state.params}/>
 
                     <Hr></Hr>
 
-                    <PathLabeledInput ref={this.outputPathInput}/>
+                    <OutputPathSelectSection ref={this.outputPathSelectRef}/>
 
                     <Hr></Hr>
-
-
-                    <ButtonWrapper>
-                        <Button onClick={() => this.props.onEcnryptButtonClicked()}> <i className="fas fa-fingerprint"></i> Encrypt</Button>
-                        <Button onClick={() => this.props.onDecryptButtonClicked()} style={{marginTop: "10px"}}> <i className="far fa-image"></i> Decrypt</Button>
-                    </ButtonWrapper>
                   
                 </div>      
             </Container>
@@ -113,27 +99,34 @@ class ControlsPanel extends React.Component<{availableAlgorithms : Array<Encrypt
     }
 
     onEncryptionTypeSelected(index){
-        this.selectedAlgorithm = this.props.availableAlgorithms[index]
-        this.setState({
-            equation : this.selectedAlgorithm.getEquation(),
-            params : this.selectedAlgorithm.getParameters()
-        });        
+        if(this.selectedAlgorithm.getName() != this.props.availableAlgorithms[index].getName()){
+            this.selectedAlgorithm = this.props.availableAlgorithms[index]
+            this.setState({
+                equation : this.selectedAlgorithm.getEquation(),
+                params : this.selectedAlgorithm.getParameters()
+            });       
+        }
     }
 
     getInputData(){
-        let inputParams = this.parametersPanelRef.current.getParamsInput();
-        let outputPath = this.outputPathInput.current.getPath();
+        let inputParams = this.parametersInputSectionRef.current.getParamsInput();
+        let outputPath = this.outputPathSelectRef.current.getPath();
 
         return {
             "selectedAlgorithm" : this.selectedAlgorithm.getName(),
             "inputParams" : inputParams,
-            "outputParams" : outputPath
+            "outputPath" : outputPath
         }
 
     }
 
-    showMissingValueMessage(name : String){
-        this.parametersPanelRef.current.showMissingValueMessage(name);
+    onInputValidationFail(name : String , message : String){
+
+        if(name == "outputPath"){
+            this.outputPathSelectRef.current.onPathValidationFail(message)
+        }else{
+            this.parametersInputSectionRef.current.onInputParamsValidationFail(name , message);
+        }
     }
 
     componentDidUpdate(prevProps , prevState) {
@@ -157,5 +150,5 @@ class ControlsPanel extends React.Component<{availableAlgorithms : Array<Encrypt
 }
  
 
-export default ControlsPanel;
+export default RightPanel;
 

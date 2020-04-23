@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import Palette from '../palette';
-import Tippy from '@tippyjs/react';
+import Tippy, { tippy } from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css'; 
 import 'tippy.js/animations/shift-away.css'
 
@@ -42,18 +42,17 @@ const Wrapper = styled.div`
     
 `
 
-class LabeledTextInput extends React.Component<{name : String, label : String , style ?: Object , type : string , onChange ?: Function}, {}> {
+class LabeledTextInput extends React.Component<{name : String, label : String ,type : string , style ?: Object  , value ?: string , onChange ?: Function}> {
 
     private wrapperRef = React.createRef<HTMLDivElement>();
-
-    private tippyElement ;
+    private tippyElement;
+    private inputElementRef = React.createRef<HTMLInputElement>();
 
     render() { 
         return ( 
             <Wrapper style={this.props.style} id="labeled-text-wrapper" ref={this.wrapperRef}>
                 <Tippy 
                     onCreate={ tip => {this.tippyElement = tip}}
-                    content="Missing value"
                     theme="warning"
                     placement="left"
                     animation="shift-away"
@@ -61,7 +60,7 @@ class LabeledTextInput extends React.Component<{name : String, label : String , 
                 >
                     <TextLabel >{this.props.label}</TextLabel>
                 </Tippy>
-                <Input type={this.props.type} onChange={(e) => this.props.onChange(e)} onBlur={() => {this.onBlurred()}} onFocus={() => {this.onFocused()}}/>
+                <Input ref={this.inputElementRef} value={this.props.value} type={this.props.type} onChange={(e) => this.onValueChanged(e)} onBlur={() => {this.onBlurred()}} onFocus={() => {this.onFocused()}}/>
             </Wrapper>
          );
     }
@@ -74,10 +73,21 @@ class LabeledTextInput extends React.Component<{name : String, label : String , 
         this.wrapperRef.current.style.borderColor = Palette.grayBorderColor;
     }
 
-    triggerTooltip(){
+    triggerErrorTooltip(message : String){
+        // console.log("Message is  " + message)
+        this.tippyElement.setContent(message);
         this.tippyElement.show();
     }
 
+    onValueChanged(e){
+        if(this.props.onChange != undefined){
+            this.props.onChange(e)
+        }
+    }
+
+    getValue() : String {
+        return this.inputElementRef.current.value;
+    }
 }
  
 export default LabeledTextInput;

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import LabeledTextInput from './LabeledTextInput';
-
+import { v4 as uuidv4 } from 'uuid';
 
 const textInputStyle = {
     marginTop : "10px"
@@ -8,17 +8,14 @@ const textInputStyle = {
 
 interface ParameterValue {
     name : String,
-    value : number
+    value : String
 }
 
-class ParametersPanel extends React.Component<{ params : Array<{symbol : String, name : String}>}, {}> {
+class ParametersInputSection extends React.Component<{ params : Array<{symbol : String, name : String}>}, {}> {
 
     inputElements;
-
-    inputValues : Array<ParameterValue> = new Array();
     references  : Array<React.RefObject<LabeledTextInput>> = [];
 
-    mainWrapperRef = React.createRef<HTMLDivElement>();
     render() { 
         
         this.inputElements = this.props.params.map( (element , index ) => {
@@ -27,35 +24,39 @@ class ParametersPanel extends React.Component<{ params : Array<{symbol : String,
             this.references[index] = reference;
 
             return (
-                <LabeledTextInput name={element.name} ref={reference} onChange={(e) => this.onValueChange(element.name , e.target.value)} type="number"  style={textInputStyle} label={labelText} key={index} />
+                <LabeledTextInput name={element.name} ref={reference} type="number"  style={textInputStyle} label={labelText} key={uuidv4()}></LabeledTextInput>
             )
         });
 
         return (  
-            <div ref={this.mainWrapperRef} >
+            <div>
                 {this.inputElements}
             </div>
         );
     }
 
-    onValueChange(name , value){
-        this.inputValues[name] = value;
-    }
-
     getParamsInput() : Array<ParameterValue>{
-        return this.inputValues;
+
+        return this.inputElements.map( (e , index) => {
+            let elementRef =  this.references[index];
+            return {
+                name : elementRef.current.props.name,
+                value : elementRef.current.getValue().toString()
+            }
+        });
+
     }
 
-    showMissingValueMessage(name : String){
+    onInputParamsValidationFail(name : String , message : String){
 
         let index = this.inputElements.findIndex( element => {
             return element.props.name == name
         })
 
         let wantedElement = this.references[index];
-        wantedElement.current.triggerTooltip();
+        wantedElement.current.triggerErrorTooltip(message);
     }
     
 }
  
-export default ParametersPanel;
+export default ParametersInputSection;

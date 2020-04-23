@@ -11,12 +11,10 @@ html,body{
     height: inherit;
 }
 
-.top-bar{
-    -webkit-user-select: none;
-    -webkit-app-region: drag;
-    background-color:#1d2229;
-    width:auto;
-    padding: 20px;
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .logo{
