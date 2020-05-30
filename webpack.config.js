@@ -86,5 +86,17 @@ module.exports = [
               target : 'electron-preload',
               entry: { preload: './src/preload.ts' },
             },
+            commonConfig),
+        Object.assign(
+          {
+            target : 'node',
+            entry: { Encrypt : './src/nova/Encrypt.ts' },
+          },
+          commonConfig),
+          Object.assign(
+            {
+              target : 'node',
+              entry: { Decrypt : './src/nova/Decrypt.ts' },
+            },
             commonConfig)
 ]

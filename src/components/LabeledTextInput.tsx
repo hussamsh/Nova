@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import Palette from '../palette';
-import Tippy, { tippy } from '@tippyjs/react';
+import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css'; 
 import 'tippy.js/animations/shift-away.css'
 
@@ -74,7 +74,6 @@ class LabeledTextInput extends React.Component<{name : String, label : String ,t
     }
 
     triggerErrorTooltip(message : String){
-        // console.log("Message is  " + message)
         this.tippyElement.setContent(message);
         this.tippyElement.show();
     }

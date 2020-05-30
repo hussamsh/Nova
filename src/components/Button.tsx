@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import Palette from '../palette';
+import Tippy from '@tippyjs/react'
 
  
 const StyledButton = styled.button`
@@ -22,13 +23,40 @@ const StyledButton = styled.button`
 
 
 class Button extends React.Component<{style ?: Object, onClick ?: Function}, {}> {
+
+
+    buttonRef = React.createRef<HTMLButtonElement>();
+    enabled : boolean = true;
+
     render() { 
         return ( 
-            <StyledButton style={this.props.style} onClick={() => this.props.onClick()}>
+            <StyledButton ref={this.buttonRef} style={this.props.style} onClick={() => this.onClick()}>
                 {this.props.children}
             </StyledButton>
          );
     }
+
+    onClick(){
+
+        if(this.enabled){
+            this.props.onClick();
+        }else{
+            console.log("Disabled");
+        }
+        
+    }
+
+    disable(){
+        this.enabled = false;
+        this.buttonRef.current.style.backgroundColor = Palette.disabledColor;
+    }
+
+    enable(){
+        this.enabled = true;
+        this.buttonRef.current.style.backgroundColor = Palette.accentColor;
+    }
 }
+
+
  
 export default Button;

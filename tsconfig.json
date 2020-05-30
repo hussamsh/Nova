@@ -12,7 +12,7 @@
     "outDir": "dist",
     "baseUrl": ".",
     "experimentalDecorators": true,
-    "lib": ["es2015","es2016", "es2017", "dom", "dom.iterable"],
+    "lib": ["es2015","es2016", "es2017", "dom", "dom.iterable" , "webworker"],
     "paths": {
       "*": ["node_modules/*"]
     }

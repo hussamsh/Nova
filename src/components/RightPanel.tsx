@@ -29,7 +29,7 @@ const ClickableLabel = styled.a`
  
 const LabelWrapper = styled.div`
     display: flex;
-    margin-top: 20px;
+    margin-top: 10px;
     margin-bottom: 5px;
     padding-right: 5px;
 `
