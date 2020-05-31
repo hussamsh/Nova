@@ -40,8 +40,6 @@ class Button extends React.Component<{style ?: Object, onClick ?: Function}, {}>
 
         if(this.enabled){
             this.props.onClick();
-        }else{
-            console.log("Disabled");
         }
         
     }

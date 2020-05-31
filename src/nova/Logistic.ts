@@ -1,5 +1,6 @@
 import { EncryptionAlgorithm } from "../interfaces/EncryptionAlgorithm";
 
+//Logistic map encryption information
 export class Logistic implements EncryptionAlgorithm{
     
     getName(): String {

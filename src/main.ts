@@ -1,6 +1,5 @@
 import { app, BrowserWindow , globalShortcut, dialog, ipcMain} from "electron";
 import * as path from "path";
-import EncryptionTypes from "./nova/EncryptionTypes";
 const { Worker, isMainThread } = require('worker_threads');
 
 let mainWindow: Electron.BrowserWindow;
@@ -9,12 +8,14 @@ let currentWorker;
 function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    height: 700,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       nodeIntegration: true,
     },
-    width: 1000,
+    width: 1200,
+    height: 700,
+    minWidth : 1100,
+    minHeight : 700,
     frame : false
   });
 
@@ -31,7 +32,6 @@ function createWindow() {
     // when you should delete the corresponding element.
     mainWindow = null;
   });
-
 
   globalShortcut.register('CommandOrControl+R', function() {
 		mainWindow.reload()
@@ -73,6 +73,9 @@ app.on("activate", () => {
 // code. You can also put them in separate files and require them here.
 
 
+/*
+  Listener for opening a directory selection to save the output file in
+*/
 ipcMain.on('select-dirs', async (event, arg) => {
   const result = await dialog.showOpenDialog(mainWindow, {
     properties: ['openDirectory']
@@ -85,89 +88,69 @@ ipcMain.on('select-dirs', async (event, arg) => {
 });
 
 
-ipcMain.on('encrypt-image' , (event , args) => {
+/*
+  Listener for cryptographic operations - encrypt / decrypt .
+*/
+ipcMain.on('crypto' , (event , args) => {
 
-  if(args["selectedAlgorithm"] == EncryptionTypes.DH.getName()){
+  /* 
+    Set 2 callbacks for cryptographic functions 
+    1) First - is the onProgress which updates the progress of the current operation
+    2) Second - is the onFinish which triggers that the operation has finsihed and the worker thread is idle and available
+  */
+  let onProgress = (progress : number) => {
+    event.reply('progress' , progress);
+  };
 
-    let params = args["inputParams"];
-    
-    let onProgress = (progress : number) => {
-      event.reply('progress' , progress);
-    };
+  let onFinish = () => {
+    event.reply('finished');
+  };
 
-    let onFinish = () => {
-      event.reply('finished');
-    };
+   //Parameters that is unique to the current cryptographic algorithm
+   let params = args["inputParams"];
 
-    //Encrypt
-    if(isMainThread){
+  //Data needed for the worker thread module
+  let data = {
+    workerData : {
+      algorithm : args["selectedAlgorithm"],
+      parameters : params,
+      inputPath : args["inputPath"],
+      outputPath : args["outputPath"]
+    }
+  };
 
-      currentWorker = new Worker('./dist/Encrypt.js', {workerData : {
-          growthRate : params[0].value,
-          initialCondition : params[1].value,
-          generalizationParam : params[2].value,
-          inputPath : args["inputPath"],
-          outputPath : args["outputPath"]
-      }});
+  //Check if current process is in the main thread - main.js is always on main thred but it's a good practice to check nevertheless 
+  if(isMainThread){
 
-
-      currentWorker.on('message' , data => {
-          onProgress(data.progress);
-      });
-
-      currentWorker.on('exit' , code =>{
-          onFinish();
-      });
-
+    //Check if the requested opeartion is encrypt or decrypt in order in instantiate the correct worker module 
+    if(args["operation"] == "encrypt"){
+      currentWorker = new Worker('./dist/Encrypt.js', data);
+    } else if (args["operation"] == "decrypt") {
+      currentWorker = new Worker('./dist/Decrypt.js', data);  
     }
 
-  }
+    // Listeners for work progress / finish of the worker thread, each listener is tied to the corresponding callback defined above
+    currentWorker.on('message' , data => {
+        onProgress(data.progress);
+    });
 
-});
+    currentWorker.on('exit' , code =>{
+        onFinish();
+    });
 
-ipcMain.on('decrypt-image' , (event , args) => {
 
-  if(args["selectedAlgorithm"] == EncryptionTypes.DH.getName()){
-
-    let params = args["inputParams"];
-
-    let onProgress = (progress : number) => {
-      event.reply('progress' , progress);
-    };
-
-    let onFinish = () => {
-      event.reply('finished');
-    };
-
-    if(isMainThread){
-
-      currentWorker = new Worker('./dist/Decrypt.js', {workerData : {
-          growthRate : params[0].value,
-          initialCondition : params[1].value,
-          generalizationParam : params[2].value,
-          inputPath :  args["inputPath"] ,
-          outputPath :  args["outputPath"]
-      }});
-      
-      currentWorker.on('message' , data => {
-          onProgress(data.progress);
-      });
-      
-      currentWorker.on('exit' , code =>{
-          onFinish();
-      });
-   }
   }
 
 });
 
 
-
+// Listener for the canceling the current operation 
 ipcMain.on('cancel' , (event , args) => {
-    
+  
+    //Simply terminates the current worker thread 
+
     if(currentWorker){
       currentWorker.terminate();
-      console.log("Canceled");
     }
 
 });

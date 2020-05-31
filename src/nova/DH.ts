@@ -1,6 +1,6 @@
 import { EncryptionAlgorithm } from "../interfaces/EncryptionAlgorithm";
-const { Worker, isMainThread } = require('worker_threads');
 
+//Double humped map encryption information
 export class DH implements EncryptionAlgorithm {
     
     getName(): String {
@@ -26,54 +26,6 @@ export class DH implements EncryptionAlgorithm {
                 name : "Generalization parameter"
             }
         ]
-    }
-
-    encrypt(growthRate : number , initialCondition : number , generalizationParam : number, inputPath : string , outputPath : string, onProgress : (progress : number) => void,  onFinish : () => void){
-        
-        if(isMainThread){
-
-            let worker = new Worker('./dist/Encrypt.js', {workerData : {
-                growthRate : growthRate,
-                initialCondition : initialCondition,
-                generalizationParam : generalizationParam,
-                inputPath : inputPath,
-                outputPath : outputPath
-            }});
-
-
-            worker.on('message' , data => {
-                onProgress(data.progress);
-            });
-
-            worker.on('exit' , code =>{
-                onFinish();
-            });
-
-        }
-
-    }
-
-    decrypt(growthRate : number , initialCondition : number , generalizationParam : number, inputPath : string , outputPath : string, onProgress : (progress : number) => void,  onFinish : () => void){
-        
-        if(isMainThread){
-
-            let worker = new Worker('./dist/Decrypt.js', {workerData : {
-                growthRate : growthRate,
-                initialCondition : initialCondition,
-                generalizationParam : generalizationParam,
-                inputPath : inputPath,
-                outputPath : outputPath
-            }});
-            
-            worker.on('message' , data => {
-                onProgress(data.progress);
-            });
-            
-            worker.on('exit' , code =>{
-                onFinish();
-            })
-        }
-
     }
 
 }

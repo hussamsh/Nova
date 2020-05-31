@@ -11,18 +11,18 @@ import Palette  from "./palette";
 import EncryptionTypes from './nova/EncryptionTypes';
 import Button from './components/Button';
 import styled from 'styled-components';
-import Tippy from '@tippyjs/react';
 import fs from 'fs';
 import { ipcRenderer } from "electron";
 import { Spinner } from "./components/Spinner";
 
+//References to all react components in view
 let controlPanelRef = React.createRef<RightPanel>();
 let imageInputRef = React.createRef<ImageInput>();
 let spinnerRef = React.createRef<Spinner>();
 let encryptButtonRef = React.createRef<Button>();
 let decryptButtonRef = React.createRef<Button>();
 
-let algorithms = EncryptionTypes.algorithms;
+let busy = false;
 
 const ButtonWrapper = styled.div`
     display: flex;
@@ -44,19 +44,12 @@ const ImageAreaWrapper = styled.div`
 `
 
 
-
-
-let busy = false;
-
 ReactDOM.render(
     <div className="container-fluid" style={{height:'inherit'}}>
         <div className="row">
-        <TopBar>  
-            <TopControlButtons />
-             {/* <div className="row align-items-center justify-content-center logo-container">
-                            <img className="ui image logo" src="./assets/images/logo-name.png"/>
-                    </div>                 */}
-        </TopBar>
+            <TopBar>  
+                <TopControlButtons />
+            </TopBar>
         </div>
         
         <div className="row" style={{height:'inherit'}}>
@@ -69,7 +62,7 @@ ReactDOM.render(
             <div className="col-3" style={{backgroundColor:Palette.sidePanel, padding:"0px", margin:"0px"}}>
 
                 <div className="right-wrapper" style={{padding:"15px"}}>
-                    <RightPanel availableAlgorithms={algorithms} ref={controlPanelRef} />
+                    <RightPanel availableAlgorithms={EncryptionTypes.algorithms} ref={controlPanelRef} />
 
                     <ButtonWrapper>
                         <Button ref={encryptButtonRef} onClick={() => onEcnryptButtonClicked()}> <i className="fas fa-fingerprint"></i> Encrypt</Button>    
@@ -103,18 +96,17 @@ ReactDOM.render(
 
     function onEcnryptButtonClicked() {
 
-        
         if(validateInput()){
             let inputData = controlPanelRef.current.getInputData();
             inputData["inputPath"] = imageInputRef.current.getImagePath();
+            inputData["operation"] = "encrypt";
             
-            ipcRenderer.send('encrypt-image', inputData);
+            ipcRenderer.send('crypto', inputData);
             onCryptoOperationStarted();
 
         }else{
             console.log("Input invalid");
         }
-
     }
 
     function onDecryptButtonClicked(){
@@ -122,8 +114,9 @@ ReactDOM.render(
         if(validateInput()){
             let inputData = controlPanelRef.current.getInputData();
             inputData["inputPath"] = imageInputRef.current.getImagePath();
-            
-            ipcRenderer.send('decrypt-image', inputData);
+            inputData["operation"] = "decrypt";
+
+            ipcRenderer.send('crypto', inputData);
             onCryptoOperationStarted();
 
         } else{
@@ -134,7 +127,6 @@ ReactDOM.render(
 
     function onCancelOperation(){
         ipcRenderer.send('cancel');
-        // onCryptoOperationEnded();
     }
 
     function validateInput() : boolean {
@@ -163,6 +155,7 @@ ReactDOM.render(
 
         let imageInputPath = imageInputRef.current.getImagePath()
 
+        //Check if an image is selected
         if(imageInputPath.length == 0){
             imageInputRef.current.triggerErrorTooltip("No image selected")
             inputValid = false;
