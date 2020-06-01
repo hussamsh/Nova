@@ -1,5 +1,6 @@
 import { app, BrowserWindow , globalShortcut, dialog, ipcMain} from "electron";
 import * as path from "path";
+import { Helpers } from "./nova/Helpers";
 const { Worker, isMainThread } = require('worker_threads');
 
 let mainWindow: Electron.BrowserWindow;
@@ -107,15 +108,19 @@ ipcMain.on('crypto' , (event , args) => {
   };
 
    //Parameters that is unique to the current cryptographic algorithm
-   let params = args["inputParams"];
+   //Restructure the input 
+   let parameters = new Object();
+   args["inputParams"].forEach((element) => {
+      parameters[element.name] = element.value;
+   });
 
   //Data needed for the worker thread module
   let data = {
     workerData : {
       algorithm : args["selectedAlgorithm"],
-      parameters : params,
+      parameters : parameters,
       inputPath : args["inputPath"],
-      outputPath : args["outputPath"]
+      outputFolder : args["outputPath"]
     }
   };
 
@@ -137,7 +142,6 @@ ipcMain.on('crypto' , (event , args) => {
     currentWorker.on('exit' , code =>{
         onFinish();
     });
-
 
   }
 

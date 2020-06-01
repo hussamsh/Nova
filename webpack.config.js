@@ -1,7 +1,11 @@
 "use strict";
 
 const path = require("path");
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const nodeExternals = require('webpack-node-externals');
+
+//For histogram js
+const nodeLoader =  require('node-loader');
 
 
 const commonConfig = {
@@ -56,13 +60,21 @@ const commonConfig = {
             }
           }
         },
+        {
+          test: /\.node$/,
+          use: 'node-loader'
+        }
       ]
     },
   
     // File extensions to support resolving
     resolve: {
       extensions: [".ts", ".tsx", ".js" , ".css" , ".png"], 
-    }
+    },
+
+    externals: [nodeExternals({
+      whitelist: [/\.css/]
+  })],
   };
 
 module.exports = [
@@ -90,13 +102,11 @@ module.exports = [
         Object.assign(
           {
             target : 'node',
-            entry: { Encrypt : './src/nova/Encrypt.ts' },
+            entry: { 
+              Decrypt : './src/nova/Decrypt.ts',
+              Encrypt : './src/nova/Encrypt.ts' ,
+              test : './src/test/tests.ts',
+            },
           },
           commonConfig),
-          Object.assign(
-            {
-              target : 'node',
-              entry: { Decrypt : './src/nova/Decrypt.ts' },
-            },
-            commonConfig)
 ]

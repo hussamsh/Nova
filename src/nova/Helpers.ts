@@ -1,5 +1,7 @@
 import BitSet from "bitset";
+import Jimp from "jimp/*";
 var toFP = require( 'math-float64-to-binary-string' );
+var resemble = require('node-resemble-js');
 
 export class Helpers {
 
@@ -34,10 +36,10 @@ export class Helpers {
         let result = "";
 
         //Concat each color binary representation 
-        result += this.dec2bin(red).padStart(8, '0');
-        result += this.dec2bin(green).padStart(8, '0');
-        result += this.dec2bin(blue).padStart(8, '0');
-        result += this.dec2bin(alpha).padStart(8, '0');
+        result += this.dec2bin(red)
+        result += this.dec2bin(green)
+        result += this.dec2bin(blue)
+        result += this.dec2bin(alpha)
 
         //Create a new bitset of the result
         return new BitSet(result.padStart(32 , '0'));
@@ -68,7 +70,7 @@ export class Helpers {
      * Convert a decimal number to binary
      */
     static dec2bin(dec) : string{
-        return (dec >>> 0).toString(2);
+        return (dec >>> 0).toString(2).padStart(8, '0');;
     }
 
 }

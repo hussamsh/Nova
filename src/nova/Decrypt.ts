@@ -20,28 +20,28 @@ let equation;
 //Current parameters of the given equation
 let scope;
 
-//Selects the decryption algorithm which set the equation and the scope
+//Selects the encryption algorithm which set the equation and the scope
 switch(workerData.algorithm){
     case EncryptionTypes.DH.getName():
         equation = "r * ((x - c) ^ 2) * ( c^2 - ((x - c) ^ 2) )";
         scope = {
-            r : bignumber(workerData.parameters[0].value),
-            x : bignumber(workerData.parameters[1].value),
-            c : bignumber(workerData.parameters[2].value),
+            r : bignumber(workerData.parameters['Growth rate']),
+            x : bignumber(workerData.parameters['Inital condition']),
+            c : bignumber(workerData.parameters['Generalization parameter']),
         };
         break;
     case EncryptionTypes.Logistic.getName():
-        equation = "r * x * ( 1 - x)";
+        equation = "r * x * ( 1 - x )";
         scope = {
-            x : bignumber(workerData.parameters[0].value),
-            r : bignumber(workerData.parameters[1].value),
+            x : bignumber(workerData.parameters['Inital condition']),
+            r : bignumber(workerData.parameters['Growth rate']),
         };
         break;
 }
 
 //TODO : check if file path is still valid
 //Read image data from the input path
-Jimp.read(workerData.inputPath.substring(8 , workerData.inputPath.length), (err , image) => {
+Jimp.read(workerData.inputPath.replace("file:///" , ""), (err , image) => {
     
     if(err) throw err;
 
@@ -120,7 +120,7 @@ Jimp.read(workerData.inputPath.substring(8 , workerData.inputPath.length), (err 
     name = name.replace("_decrypted" , "");
 
     //Add _decrypted to the original file name 
-    let outputName = workerData.outputPath + "\\" + name + "_decrypted." + filename[1]; 
+    let outputName = workerData.outputFolder + "\\" + name + "_decrypted." + filename[1]; 
     
     //When finished , write the new image data to the output path
     image.write(outputName);

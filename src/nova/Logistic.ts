@@ -15,7 +15,7 @@ export class Logistic implements EncryptionAlgorithm{
         return [
             {
                 symbol : "x_n",
-                name : "Inital Condition"
+                name : "Inital condition"
             },
             {
                 symbol : "r",
