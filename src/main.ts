@@ -1,6 +1,5 @@
 import { app, BrowserWindow , globalShortcut, dialog, ipcMain} from "electron";
 import * as path from "path";
-import { Helpers } from "./nova/Helpers";
 const { Worker, isMainThread } = require('worker_threads');
 
 let mainWindow: Electron.BrowserWindow;

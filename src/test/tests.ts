@@ -7,6 +7,13 @@ import EncryptionTypes from '../nova/EncryptionTypes';
 const { Worker } = require('worker_threads');
 var resemble = require('node-resemble-js');
 
+
+let imageTestFolder = __dirname + "/../app/assets/images/testing";
+let inputImagePath = imageTestFolder + "/test_image.png";
+let encryptedImagePath = imageTestFolder +"/test_image_encrypted.png";
+let decryptedImagePath = imageTestFolder +"/test_image_decrypted.png";
+
+
 describe("Helpers" , () => {
 
   describe("Decimal to binary conversion" , () => {
@@ -75,10 +82,7 @@ describe("Helpers" , () => {
 describe("Double humped map cryptography" , function() {
   this.timeout(300000);
 
-  let imageTestFolder = __dirname + "/../app/assets/images/testing";
-  let inputImagePath = imageTestFolder + "/test_image.png";
-  let encryptedImagePath = imageTestFolder +"/test_image_encrypted.png";
-  let decryptedImagePath = imageTestFolder +"/test_image_decrypted.png";
+ 
 
   describe("Encrypt test image" , () => {
 
