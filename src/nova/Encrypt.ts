@@ -119,7 +119,7 @@ Jimp.read(workerData.inputPath.replace("file:///" , ""), (err , image) => {
     name = name.replace("_decrypted" , "");
 
     //Add _encrypted to the original file name 
-    let outputName = workerData.outputFolder + "\\" + name + "_encrypted." + filename[1]; 
+    let outputName = workerData.outputFolder + "/" + name + "_encrypted." + filename[1]; 
     
     //When finished , write the new image data to the output path
     image.write(outputName);

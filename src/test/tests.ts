@@ -7,12 +7,10 @@ import EncryptionTypes from '../nova/EncryptionTypes';
 const { Worker } = require('worker_threads');
 var resemble = require('node-resemble-js');
 
-
 let imageTestFolder = __dirname + "/../app/assets/images/testing";
 let inputImagePath = imageTestFolder + "/test_image.png";
 let encryptedImagePath = imageTestFolder +"/test_image_encrypted.png";
 let decryptedImagePath = imageTestFolder +"/test_image_decrypted.png";
-
 
 describe("Helpers" , () => {
 
@@ -138,6 +136,7 @@ describe("Double humped map cryptography" , function() {
 
   describe("Decrypt test image" , () => {
 
+
     it("Decrypt Worker module called and completed successfully" , (done) => {
       let data = {
         workerData : {
@@ -183,11 +182,12 @@ describe("Double humped map cryptography" , function() {
     it("Mismatch is zero" , () => {
       ( comparison.misMatchPercentage == 0 ).should.equal(true);
     });
+
     
-    after( () => {
-      fs.unlinkSync(encryptedImagePath);
-      fs.unlinkSync(decryptedImagePath);
-    });
+    // after( () => {
+    //   fs.unlinkSync(encryptedImagePath);
+    //   fs.unlinkSync(decryptedImagePath);
+    // });
     
   });
 
@@ -299,10 +299,10 @@ describe("Logistic map cryptography" , function() {
       ( comparison.misMatchPercentage == 0 ).should.equal(true);
     });
     
-    after( () => {
-      fs.unlinkSync(encryptedImagePath);
-      fs.unlinkSync(decryptedImagePath);
-    });
+    // after( () => {
+    //   fs.unlinkSync(encryptedImagePath);
+    //   fs.unlinkSync(decryptedImagePath);
+    // });
     
   });
 

@@ -8,7 +8,7 @@
     "watch": "webpack --config webpack.config.js -w",
     "lint": "tslint -c tslint.json -p tsconfig.json",
     "start": "npm run build && electron ./dist/main.js",
-    "test": "mocha ./dist/test.js"
+    "test": "mocha ./dist/tests.js"
   },
   "repository": "",
   "keywords": [

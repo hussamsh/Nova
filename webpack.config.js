@@ -105,7 +105,7 @@ module.exports = [
             entry: { 
               Decrypt : './src/nova/Decrypt.ts',
               Encrypt : './src/nova/Encrypt.ts' ,
-              test : './src/test/tests.ts',
+              tests : './src/test/tests.ts',
             },
           },
           commonConfig),
