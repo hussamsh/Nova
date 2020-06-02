@@ -7,7 +7,7 @@ import EncryptionTypes from '../nova/EncryptionTypes';
 const { Worker } = require('worker_threads');
 var resemble = require('node-resemble-js');
 
-let imageTestFolder = __dirname + "/../app/assets/images/testing";
+let imageTestFolder = __dirname + "/../app/assets/images";
 let inputImagePath = imageTestFolder + "/test_image.png";
 let encryptedImagePath = imageTestFolder +"/test_image_encrypted.png";
 let decryptedImagePath = imageTestFolder +"/test_image_decrypted.png";
@@ -19,6 +19,7 @@ describe("Helpers" , () => {
     it("Convert 0" , () => {
       Helpers.dec2bin(0).should.equal("00000000");
     });
+
 
     it("Convert 1" , () => {
       Helpers.dec2bin(255).should.equal("11111111");
@@ -80,8 +81,6 @@ describe("Helpers" , () => {
 describe("Double humped map cryptography" , function() {
   this.timeout(300000);
 
- 
-
   describe("Encrypt test image" , () => {
 
     it("Encrypt Worker module called and completed successfully" , (done) => {
@@ -129,8 +128,6 @@ describe("Double humped map cryptography" , function() {
     it("Mismatch over 95%" , () => {
       ( comparison.misMatchPercentage > 95 ).should.equal(true);
     });
-    
-    
     
   });
 
@@ -184,10 +181,10 @@ describe("Double humped map cryptography" , function() {
     });
 
     
-    // after( () => {
-    //   fs.unlinkSync(encryptedImagePath);
-    //   fs.unlinkSync(decryptedImagePath);
-    // });
+    after( () => {
+      fs.unlinkSync(encryptedImagePath);
+      fs.unlinkSync(decryptedImagePath);
+    });
     
   });
 
@@ -196,11 +193,6 @@ describe("Double humped map cryptography" , function() {
 describe("Logistic map cryptography" , function() {
   this.timeout(300000);
 
-  let imageTestFolder = __dirname + "/../app/assets/images/testing";
-  let inputImagePath = imageTestFolder + "/test_image.png";
-  let encryptedImagePath = imageTestFolder +"/test_image_encrypted.png";
-  let decryptedImagePath = imageTestFolder +"/test_image_decrypted.png";
-
   describe("Encrypt test image" , () => {
 
     it("Encrypt Worker module called and completed successfully" , (done) => {
@@ -299,10 +291,10 @@ describe("Logistic map cryptography" , function() {
       ( comparison.misMatchPercentage == 0 ).should.equal(true);
     });
     
-    // after( () => {
-    //   fs.unlinkSync(encryptedImagePath);
-    //   fs.unlinkSync(decryptedImagePath);
-    // });
+    after( () => {
+      fs.unlinkSync(encryptedImagePath);
+      fs.unlinkSync(decryptedImagePath);
+    });
     
   });
 

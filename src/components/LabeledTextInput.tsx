@@ -7,12 +7,12 @@ import 'tippy.js/animations/shift-away.css'
 
 const TextLabel = styled.p`
     background-color : ${Palette.gray};
-    color : #959595;
-    font-family: "Montserrat";
+    color : #424242;
+    /* font-family: "Montserrat"; */
     display : flex;
     align-items: center;
     justify-content : center;
-    font-weight : 800;
+    font-weight : 500;
     font-size : 0.7em;
     padding-left : 10px;
     padding-right: 10px;
