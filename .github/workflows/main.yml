@@ -22,11 +22,12 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
-    - name: Install dependencies
-      run: npm install
+    - uses : actions/setup-node@v1
+      with:
+        node-version: '12'
+
+    - run : npm install
     
-    - name: Build project
     - run : npm run build
     
-    - name: Run tests
     - run : npm run test
