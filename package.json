@@ -49,6 +49,7 @@
     "bitset": "^5.1.1",
     "bootstrap": "^4.4.1",
     "chai": "^4.2.0",
+    "file-uri-to-path": "^2.0.0",
     "jimp": "^0.12.1",
     "jquery": "^3.5.0",
     "math-float64-to-binary-string": "^1.0.1",

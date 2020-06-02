@@ -1,19 +1,9 @@
 import { workerData,parentPort } from 'worker_threads';
 import { Helpers } from "./Helpers";
-import { create, all, bignumber } from 'mathjs';
+import { bignumber } from 'mathjs';
 import BitSet from 'bitset';
 import Jimp from "jimp";
 import EncryptionTypes from './EncryptionTypes';
-
-
-//mathjs configuration - use BigNumbers of precsion 64 bits
-const config = {
-    number : 'BigNumber',
-    precision : 64
-}
-
-//Create mathjs object
-const math = create(all , config);
 
 //Equation of current encryption algorithm
 let equation;
@@ -41,7 +31,7 @@ switch(workerData.algorithm){
 
 //TODO : check if file path is still valid
 //Read image data from the input path
-Jimp.read(workerData.inputPath.replace("file:///" , ""), (err , image) => {
+Jimp.read(workerData.inputPath, (err , image) => {
     
     if(err) throw err;
 
@@ -60,7 +50,7 @@ Jimp.read(workerData.inputPath.replace("file:///" , ""), (err , image) => {
     image.scan(0 , 0 , image.bitmap.width , image.bitmap.height , (x ,y ,idx) => {
         
         //Evaluate next iteration of the map
-        let next = math.evaluate(equation , scope)
+        let next = Helpers.math.evaluate(equation , scope)
 
         //Update initial condition
         scope.x = next;

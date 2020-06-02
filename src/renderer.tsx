@@ -132,6 +132,7 @@ ReactDOM.render(
     function validateInput() : boolean {
         //Get input that was returned from parameters panel
         let currentState = controlPanelRef.current.getInputData();
+        let parameters = currentState["inputParams"];
         let inputValid = true;
 
         //Validate that no parameter is having empty values
@@ -142,6 +143,49 @@ ReactDOM.render(
             }
         });
 
+        if (inputValid){
+            switch(currentState["selectedAlgorithm"]){
+                case EncryptionTypes.DH.getName(): 
+                {
+                    let r = +(parameters[0].value);
+                    let x = +(parameters[1].value);
+                    let c = +(parameters[2].value);
+
+                    if( x > 2 * c ){
+                        controlPanelRef.current.onInputValidationFail(parameters[1].name , "x must be <= (2c)");
+                        inputValid = false;
+                    }
+            
+                    let cubed  = Math.pow(c , 3);
+                    
+                    if(r > 8 / cubed){
+                        controlPanelRef.current.onInputValidationFail(parameters[0].name , "r must be <= (8/c^3)");
+                        inputValid = false;
+                    }
+                }
+                
+                break;
+                case EncryptionTypes.Logistic.getName():
+                {
+                    let x = +(parameters[0].value);
+                    let r = +(parameters[1].value);
+
+                    if(x > 1){
+                        controlPanelRef.current.onInputValidationFail(parameters[0].name , "x must be <= 1");
+                        inputValid = false;
+                    }
+
+                    if(r > 4){
+                        controlPanelRef.current.onInputValidationFail(parameters[1].name , "x must be <= 4");
+                        inputValid = false;
+                    }
+                    
+                }
+
+                break;
+            }
+        }
+        
 
         //Validate if the output path exists or not
         if (currentState.outputPath.length == 0){

@@ -5,6 +5,7 @@ const { dialog  } = require('electron').remote
 import Tippy, { tippy } from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css'; 
 import 'tippy.js/animations/shift-away.css'
+var uri2path = require('file-uri-to-path');
 
 const DragDropImage = styled.img`
     height : 90px;
@@ -41,7 +42,6 @@ const MainWrapper = styled.div`
     width : 100%;
     height : 100%;
     overflow: hidden;
-    padding:20px;
 `
 
 const ImageMain = styled.img`
@@ -152,7 +152,7 @@ export default class ImageInput extends React.Component {
 
 
     getImagePath(){
-        return this.mainImageElement.src;
+        return uri2path(this.mainImageElement.src);
     }
 
 
