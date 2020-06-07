@@ -1,6 +1,7 @@
 import { app, BrowserWindow , globalShortcut, dialog, ipcMain} from "electron";
 import * as path from "path";
 const { Worker, isMainThread } = require('worker_threads');
+const isDev = require('electron-is-dev');
 
 let mainWindow: Electron.BrowserWindow;
 let currentWorker;
@@ -14,9 +15,9 @@ function createWindow() {
     },
     width: 1200,
     height: 700,
-    minWidth : 1100,
+    minWidth : 1200,
     minHeight : 700,
-    frame : false
+    frame : false,
   });
 
   // and load the index.html of the app.
@@ -51,6 +52,14 @@ function createWindow() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", createWindow);
+
+app.on('before-quit' , (event) => {
+  if(currentWorker){
+    currentWorker.removeAllListeners('message');
+    currentWorker.removeAllListeners('exit');
+    currentWorker.terminate();
+  }
+});
 
 // Quit when all windows are closed.
 app.on("window-all-closed", () => {
@@ -104,6 +113,9 @@ ipcMain.on('crypto' , (event , args) => {
 
   let onFinish = () => {
     event.reply('finished');
+    currentWorker.removeAllListeners('message');
+    currentWorker.removeAllListeners('exit');
+    currentWorker = null;
   };
 
    //Parameters that is unique to the current cryptographic algorithm
@@ -128,9 +140,9 @@ ipcMain.on('crypto' , (event , args) => {
 
     //Check if the requested opeartion is encrypt or decrypt in order in instantiate the correct worker module 
     if(args["operation"] == "encrypt"){
-      currentWorker = new Worker('./dist/Encrypt.js', data);
+      currentWorker = new Worker((isDev ? "./dist/" : "./resources/") + 'Encrypt.js', data);
     } else if (args["operation"] == "decrypt") {
-      currentWorker = new Worker('./dist/Decrypt.js', data);  
+      currentWorker = new Worker((isDev ? "./dist/" : "./resources/") + 'Decrypt.js', data);  
     }
 
     // Listeners for work progress / finish of the worker thread, each listener is tied to the corresponding callback defined above

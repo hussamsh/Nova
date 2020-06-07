@@ -5,10 +5,12 @@ html,body{
     overflow-y: hidden;
     height: 100%;
     font-family: 'Roboto';
+    background-color: transparent;
 }
 
 #main{
     height: inherit;
+
 }
 
 input::-webkit-outer-spin-button,
@@ -60,8 +62,8 @@ input::-webkit-inner-spin-button {
     border-radius: 50%;
     position: absolute;
     border: calc(65px * 0.05) solid transparent;
-    border-top-color: #f2a365;
-    border-left-color: #f2a365;
+    border-top-color: #1972FE;
+    border-left-color: #1972FE;
     animation: semipolar-spinner-animation 2s infinite;
   }
 

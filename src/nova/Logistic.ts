@@ -8,7 +8,7 @@ export class Logistic implements EncryptionAlgorithm{
     }
     
     getEquation(): String {
-        return "x_{n+1} = r x_n (1-x_n)"
+        return "x_{n+1} = \\lambda  x_n (1-x_n)"
     }
     
     getParameters(): { symbol: String; name: String; }[] {
@@ -18,7 +18,7 @@ export class Logistic implements EncryptionAlgorithm{
                 name : "Inital condition"
             },
             {
-                symbol : "r",
+                symbol : "λ",
                 name : "Growth rate"
             }
         ]

@@ -12,6 +12,7 @@ const MainWrapper = styled.div`
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    border-top-right-radius: 20px;
 
 `
 

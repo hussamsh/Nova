@@ -43,7 +43,7 @@ class TopControlButtons extends React.Component {
 
     render(){
         return (
-            <Wrapper>
+            <Wrapper className="ml-auto">
                 <CloseButton onClick={() => remote.getCurrentWindow().close()}>
                     <i className="fas fa-times"></i>
                 </CloseButton>

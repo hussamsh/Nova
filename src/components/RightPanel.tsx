@@ -11,7 +11,8 @@ const Container = styled.div`
 `
 
 const EnceryptionLabel = styled.p`
-    color : #7a7e84;
+    color : #9E9E9E;
+    letter-spacing: .5px;
     font-size: 0.82em;
     font-weight: 800;
     margin-bottom: 0px;
@@ -37,7 +38,7 @@ const LabelWrapper = styled.div`
 const EquationWrapper = styled.div`
     margin-top: 30px;
     color : white;
-    /* font-size: 1em; */
+    font-size: 0.9em;
     margin-bottom: 30px;
 `
 
@@ -74,7 +75,7 @@ class RightPanel extends React.Component<{availableAlgorithms : Array<Encryption
                     
                     <LabelWrapper>
                         <EnceryptionLabel>ENCRYPTION TYPE</EnceryptionLabel>
-                        <ClickableLabel>Learn more</ClickableLabel>
+                        {/* <ClickableLabel>Learn more</ClickableLabel> */}
                     </LabelWrapper>
                     
                     <DropDown items={this.names} onClick={this.onEncryptionTypeSelected.bind(this)}/>

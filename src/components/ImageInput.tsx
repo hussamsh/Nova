@@ -16,7 +16,7 @@ const DragDropImage = styled.img`
 const PlaceholderText = styled.p`
     color : white;
     text-align: center;
-    font-weight: 200;
+    font-weight: 300;
     font-size: 1.7em;
 
     span {
@@ -48,7 +48,7 @@ const ImageMain = styled.img`
     max-width: 100%;
     max-height: 100%;
     display: none;
-    /* object-fit: cover; */
+    padding: 20px;
 `
 
 export default class ImageInput extends React.Component {
@@ -78,7 +78,7 @@ export default class ImageInput extends React.Component {
                     </PlaceholderWrapper>
                     
                     
-                    <ImageMain id="image-main"  />
+                    <ImageMain id="image-main" />
 
                         
                 </MainWrapper>
@@ -152,7 +152,7 @@ export default class ImageInput extends React.Component {
 
 
     getImagePath(){
-        return uri2path(this.mainImageElement.src);
+        return this.mainImageElement.src.length != 0 ? uri2path(this.mainImageElement.src) : this.mainImageElement.src;
     }
 
 

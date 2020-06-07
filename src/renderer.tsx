@@ -32,22 +32,47 @@ const ButtonWrapper = styled.div`
 const TopBar = styled.div`
     -webkit-user-select: none;
     -webkit-app-region: drag;
-    background-color:#1d2229;
+    background-color:${Palette.sidePanel};
     width:100%;
+    padding: 5px;
+    padding-left: 20px;
+
 `
 
 const ImageAreaWrapper = styled.div`
-    background-color : ${Palette.mainPanel};
+    background: rgb(25,46,69);
+    background: radial-gradient(circle, rgba(25,46,69,1) 0%, rgba(20,30,48,1) 100%);
+    /* background-color : ${Palette.mainPanel}; */
+    border-top-right-radius : 20px;
     height: inherit;
     margin: 0px;
     padding: 0px;
 `
 
+const RightPanelWrapper = styled.div`
+    margin: 0px;
+    padding-left : 10px;
+    padding-right: 10px;
+    background-color: ${Palette.sidePanel};
+`
+
+const Wrapper = styled.div`
+    height:inherit;
+    background-color : ${Palette.sidePanel};
+`;
+
+const Logo = styled.img`
+    height : 25px;
+    width : 40px;
+`
 
 ReactDOM.render(
-    <div className="container-fluid" style={{height:'inherit'}}>
+
+    <Wrapper className="container-fluid">
+
         <div className="row">
-            <TopBar>  
+            <TopBar className="d-flex align-items-center">
+                <Logo src="./assets/images/nova.png" />
                 <TopControlButtons />
             </TopBar>
         </div>
@@ -59,7 +84,7 @@ ReactDOM.render(
                 <ImageInput ref={imageInputRef}/>
             </ImageAreaWrapper>
 
-            <div className="col-3" style={{backgroundColor:Palette.sidePanel, padding:"0px", margin:"0px"}}>
+            <RightPanelWrapper className="col-3">
 
                 <div className="right-wrapper" style={{padding:"15px"}}>
                     <RightPanel availableAlgorithms={EncryptionTypes.algorithms} ref={controlPanelRef} />
@@ -71,11 +96,11 @@ ReactDOM.render(
 
                 </div>
                 
-            </div>
+            </RightPanelWrapper>
 
         </div>
         
-    </div>
+    </Wrapper>
     
     , document.getElementById('main'));
 
@@ -159,7 +184,7 @@ ReactDOM.render(
                     let cubed  = Math.pow(c , 3);
                     
                     if(r > 8 / cubed){
-                        controlPanelRef.current.onInputValidationFail(parameters[0].name , "r must be <= (8/c^3)");
+                        controlPanelRef.current.onInputValidationFail(parameters[0].name , "λ must be <= (8/c^3)");
                         inputValid = false;
                     }
                 }

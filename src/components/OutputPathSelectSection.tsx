@@ -1,16 +1,18 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import Palette from '../palette';
-import LabeledTextInput from './LabeledTextInput';
+import Tippy from '@tippyjs/react';
+import Input from "./Input";
 
 let listener = window["ipcRenderer"]
 
 const BrowseButton = styled.button`
     border : 0px;
+    width: 50%;
     border-radius: 4px;
     color : ${Palette.materialBlack};
     background-color : ${Palette.accentColor};
-    align-self : flex-end;
+    align-self : center;
     margin-top: 5px;
     padding: 7px;
     font-weight: 900;
@@ -22,6 +24,14 @@ const BrowseButton = styled.button`
     }
 `
 
+const Label = styled.p`
+    color : #9E9E9E;
+    letter-spacing: .5px;
+    font-size: 0.82em;
+    font-weight: 800;
+    margin-bottom: 0px;
+`
+
 const Parent = styled.div`
     display : flex;
     flex-direction : column;
@@ -29,8 +39,9 @@ const Parent = styled.div`
 
 export default class OutputPathSelectSection extends React.Component<{ style ?: Object}, {outputPath : string}> {
     
-    private outputPathInputRef = React.createRef<LabeledTextInput>();
+    private outputPathInputRef = React.createRef<Input>();
     private outputPath : string = "";
+    private tippyElement;
 
     constructor(props){
         super(props);
@@ -42,7 +53,17 @@ export default class OutputPathSelectSection extends React.Component<{ style ?: 
     public render() {
         return (
             <Parent>
-                <LabeledTextInput onChange={(e) => this.onPathChanged(e.target.value)} value={this.state.outputPath} ref={this.outputPathInputRef} name="outputPath" label="Output Folder" type="text" />
+                <Tippy 
+                    onCreate={ tip => {this.tippyElement = tip}}
+                    theme="warning"
+                    placement="left"
+                    animation="shift-away"
+                    trigger="manual"
+                >
+                <Label>OUTPUT DIRECTORY</Label>
+                    
+                </Tippy>
+                <Input marginTop="8px" ref={this.outputPathInputRef} type="text" value={this.state.outputPath} onChange={e => {this.onPathChanged(e.target.value)}} />
                 <BrowseButton id="browse-btn"> <i className="far fa-folder-open"></i> Browse</BrowseButton>
             </Parent>
             
@@ -67,11 +88,12 @@ export default class OutputPathSelectSection extends React.Component<{ style ?: 
     }
 
     getPath() : String {
-        return this.outputPathInputRef.current.props.value;
+        return this.outputPathInputRef.current.getValue();
     }
 
     onPathValidationFail(message : String){
-        this.outputPathInputRef.current.triggerErrorTooltip(message);
+        this.tippyElement.setContent(message);
+        this.tippyElement.show();
     }
 
 }
