@@ -77,7 +77,7 @@ ReactDOM.render(
             </TopBar>
         </div>
         
-        <div className="row" style={{height:'inherit'}}>
+        <div className="row" style={{height:'98%'}}>
 
             <ImageAreaWrapper className="col-9">
                 <Spinner ref={spinnerRef}  onCancelClicked={ () => onCancelOperation() }/>

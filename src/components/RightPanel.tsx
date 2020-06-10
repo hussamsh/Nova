@@ -84,7 +84,7 @@ class RightPanel extends React.Component<{availableAlgorithms : Array<Encryption
                         {equationMathJax}
                     </EquationWrapper>
                     
-                    <Hr></Hr>
+                    {/* <Hr></Hr> */}
                     
                     <ParametersInputSection  ref={this.parametersInputSectionRef} params={this.state.params}/>
 
