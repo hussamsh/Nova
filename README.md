@@ -18,33 +18,33 @@
     <a href="https://github.com/github_username/repo/issues">Report Bug</a>
     ·
     <a href="https://github.com/github_username/repo/issues">Request Feature</a>
+
   </p>
 
 </p>
 
 
-
 <!-- TABLE OF CONTENTS -->
 ## Table of Contents
 
-* [About the Project](#about-the-project)
-  * [Built With](#built-with)
-* [Getting Started](#getting-started)
-  * [Installation](#installation)
-* [Usage](#usage)
-* [Roadmap](#roadmap)
-* [Contributing](#contributing)
-* [License](#license)
-* [Contact](#contact)
+- [Table of Contents](#table-of-contents)
+- [About The Project](#about-the-project)
+  - [Built With](#built-with)
+- [Getting Started](#getting-started)
+  - [Installation](#installation)
+  - [Usage](#usage)
 
 
+
+<!-- Place this tag where you want the button to render. -->
+<GitHubButton href="https://github.com/ntkme/github-buttons/archive/master.zip" data-color-scheme="no-preference: light; light: light; dark: dark;" data-icon="octicon-download" data-size="large" aria-label="Download ntkme/github-buttons on GitHub">Download</GitHubButton>
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
 [![Product Name Screen Shot][product-screenshot]]()
 
-NOVA is a cryptographic application that enables encryption and decryption of images using latest technologies - mainly **Chaotic maps**.
+NOVA is a cryptographic application that enables encryption and decryption of images using latest technologies - mainly **Chaotic maps.**
 
 *Nova offers three chaotic maps that can be used for encryption / decryption*
 * **Logistic map** 
@@ -63,8 +63,27 @@ NOVA is a cryptographic application that enables encryption and decryption of im
 * [React](https://reactjs.org/)
 
 
+<!-- GETTING STARTED -->
+## Getting Started
 
+### Installation
+Download the lateset stable distribution 
 
+<img src="./app/assets/images/macos.png" alt="Logo" width="160" >
+<img src="./app/assets/images/microsoft.png" alt="Logo" width="160" >
+<img src="./app/assets/images/linux.png" alt="Logo" width="160" >
+
+### Usage
+**Step 1 )**  Enter the desired params for your choosen map as well as an output directory for the processed image
+
+<img src="./app/assets/images/choose-param.png" alt="Logo" height="400px" >
+
+<!-- [![Product Name Screen Shot][params-screenshot]]() -->
+
+**Step 2 )**  Choose the desired image for encryption / decryption by drag-drop or clicking browse in the designated area.
+
+**Step 3 )**  Press Encrypt / Decrypt and wait for your image to be processed. Once finished you will find the output at the path choosen for output directory with the name file appended to it either _encrypted / _decrypted.
 
 
 [product-screenshot]: ./app/assets/images/screenshot.png
+[params-screenshot]: ./app/assets/images/choose-param.png
