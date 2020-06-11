@@ -38,6 +38,9 @@
 - [Development](#development)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
+- [C++ implementation](#c-implementation)
+- [License](#license)
+- [Contact](#contact)
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
@@ -143,6 +146,22 @@ If you would like to develop a new feature or see how the code is running under 
   ```sh
   npm run start
   ```
+
+
+## C++ implementation
+
+I have implemented this project in c++ which run from CLI and perofrmes at 3 - 5 times the speed of this implementation in javascript. Check it out in this [github repo](). 
+
+
+## License
+
+TODO
+
+## Contact
+
+TODO
+
+
 
 [product-screenshot]: ./app/assets/images/screenshot.png
 [params-screenshot]: ./app/assets/images/choose-param.png
