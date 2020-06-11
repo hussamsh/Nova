@@ -37,7 +37,6 @@
 - [Security](#security)
 - [Examples](#examples)
   - [Lena](#lena)
-  - [Ruby](#ruby)
 - [Roadmap](#roadmap)
 - [Development](#development)
   - [Prerequisites](#prerequisites)
@@ -124,13 +123,12 @@ Of course there are other aspects of measuring security for an encryption system
 
 ### Lena
 
-<img src="./app/assets/images/lena.png" alt="Logo" width="300px" >
-<img src="./app/assets/images/lena_enc.png" alt="Logo" width="300px" >
+|Original                                       | Encrpypted                                                         |
+|:---------------------------------------------:|:------------------------------------------------------------------:| 
+|<img src="./app/assets/images/lena.png" width="500px" >| <img src="./app/assets/images/lena.png" width="500px">     |
+|<img src="./app/assets/images/ruby.jpg" width="500px" >| <img src="./app/assets/images/ruby_enc.jpg" width="500px"> |
 
-### Ruby
 
-<img src="./app/assets/images/ruby.jpg" alt="Logo" width="300px" >
-<img src="./app/assets/images/ruby_enc.jpg" alt="Logo" width="300px" >
 
 ## Roadmap
 
