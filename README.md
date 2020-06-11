@@ -125,8 +125,8 @@ Of course there are other aspects of measuring security for an encryption system
 
 |Original                                       | Encrpypted                                                         |
 |:---------------------------------------------:|:------------------------------------------------------------------:| 
-|<img src="./app/assets/images/lena.png" width="500px" >| <img src="./app/assets/images/lena.png" width="500px">     |
-|<img src="./app/assets/images/ruby.jpg" width="500px" >| <img src="./app/assets/images/ruby_enc.jpg" width="500px"> |
+|<img src="./app/assets/images/lena.png" width="300px" >| <img src="./app/assets/images/lena.png" width="300px">     |
+|<img src="./app/assets/images/ruby.jpg" width="300px" >| <img src="./app/assets/images/ruby_enc.jpg" width="300px"> |
 
 
 
