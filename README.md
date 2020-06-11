@@ -34,6 +34,10 @@
   - [Download](#download)
   - [Usage](#usage)
   - [Gotchas](#gotchas)
+- [Security](#security)
+- [Examples](#examples)
+  - [Lena](#lena)
+  - [Ruby](#ruby)
 - [Roadmap](#roadmap)
 - [Development](#development)
   - [Prerequisites](#prerequisites)
@@ -103,6 +107,30 @@ Download the lateset stable distribution for your OS.
   
 * Make sure that the values chosen as input makes since for the chosen map, not any two values will suffice. Each chaotic map has it's own ranges that it can operate in. Refer to [this page]() to learn more.
 
+* Be mindful of what parameters you use for encrypting an image and write them down or memorize them as any slight change will not yield a correct decryption of an image you need to enter the <b>exact</b> numbers you used for encryption, i.e $3.725 \neq 3.724$.
+
+## Security
+
+One aspect of measuring the security of any encrypton is called `key space analysis` which is simply the number of keys - permutations - that an attacker has to through in order to find the parameters your are using.
+
+A map like the double humped map has three input parameters at 64 bits length yields it's size to be 192 bits long which constitues a key space of $2^{192} = 10^{57}$ keys in total.
+
+Lets put this into prespective. Our entire solar systems has about $10^{56}$ atoms which means that an attacker that can harness the power of our solar system and make every single atom calculate one key of the map, will be an order of magnitude short of achieving his goal. 
+
+Of course there are other aspects of measuring security for an encryption system such as entropy, key sensitivity analysis, differential attacks ... etc. For a thourgh analysis of our Double humped map example, read this [journal](https://www.sciencedirect.com/science/article/pii/S2090123218300195)
+
+
+## Examples
+
+### Lena
+
+<img src="./app/assets/images/lena.png" alt="Logo" width="300px" >
+<img src="./app/assets/images/lena_enc.png" alt="Logo" width="300px" >
+
+### Ruby
+
+<img src="./app/assets/images/ruby.jpg" alt="Logo" width="300px" >
+<img src="./app/assets/images/ruby_enc.jpg" alt="Logo" width="300px" >
 
 ## Roadmap
 
@@ -146,7 +174,6 @@ If you would like to develop a new feature or see how the code is running under 
   ```sh
   npm run start
   ```
-
 
 ## C++ implementation
 
