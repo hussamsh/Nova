@@ -48,6 +48,35 @@ input::-webkit-inner-spin-button {
     border-right-color: red;
   }
 
+
+  .control-button {
+    margin-left: 5px !important;
+    -webkit-app-region: no-drag;
+}
+    
+.tippy-box[data-theme~='info'] {
+    background-color: #757575;
+    color: white;
+  }
+
+  .tippy-box[data-theme~='info'][data-placement^='top'] > .tippy-arrow::before {
+    border-top-color: #757575;
+  }
+  .tippy-box[data-theme~='info'][data-placement^='bottom'] > .tippy-arrow::before {
+    border-bottom-color: #757575;
+  }
+  .tippy-box[data-theme~='info'][data-placement^='left'] > .tippy-arrow::before {
+    border-left-color: #757575;
+  }
+  .tippy-box[data-theme~='info'][data-placement^='right'] > .tippy-arrow::before {
+    border-right-color: #757575;
+  }
+
+
+
+
+
+
   .semipolar-spinner, .semipolar-spinner * {
     box-sizing: border-box;
   }
@@ -119,6 +148,61 @@ input::-webkit-inner-spin-button {
   }
 
 
+
+  
+
+
+label {
+    pointer-events: none;
+    width: 100%;
+}
+label .input {
+    display: none;
+}
+label .input:checked + .toggle-wrapper {
+    box-shadow: 0 8px 14px 0 rgba(18, 51, 215, 0.12);
+}
+label .input:checked + .toggle-wrapper > .selector {
+    /* left: calc(100% - 20px); */
+    left: 10px;
+    /* background-color: #1972FE; */
+    background-color: #757575;
+
+}
+
+label .toggle-wrapper {
+    position: relative;
+    width: 50px;
+    height: 25px;
+    background-color: rgba(240,240,240,0.2);
+    border-radius: 10px;
+    margin: auto;
+    margin-right: 10px;
+    cursor: pointer;
+    pointer-events: all;
+    /* box-shadow: 0 8px 14px 0 rgba(215, 60, 18, 0.12); */
+}
+label .toggle-wrapper .selector {
+    width: 12px;
+    height: 12px;
+    position: absolute;
+    top: 50%;
+    /* left: 10px; */
+    left: calc(100% - 20px);
+    transform: translateY(-50%);
+    background-color: #1972FE;
+    transition: left 0.25s ease;
+    border-radius: 50%;
+}
+label .notification {
+    font-size: 20px;
+    width: 100%;
+}
+label .notification .selected:before {
+    content: "No";
+    font-size: 20px;
+    border-bottom: 2px solid;
+}
 
 
 

@@ -30,6 +30,8 @@ switch(workerData.algorithm){
 }
 
 //TODO : check if file path is still valid
+
+parentPort.postMessage( { progress :  "Reading Image Data"} )
 //Read image data from the input path
 Jimp.read(workerData.inputPath, (err , image) => {
     
@@ -44,17 +46,18 @@ Jimp.read(workerData.inputPath, (err , image) => {
         Second - Set a variable index to know how many pixels are left for decrypting
     */
     let numPixels = image.bitmap.width * image.bitmap.height;
-    let index = 0
+    let index = 0;
 
     //After reading the image, scan it's pixels
     image.scan(0 , 0 , image.bitmap.width , image.bitmap.height , (x ,y ,idx) => {
-        
+
         //Evaluate next iteration of the map
         let next = Helpers.math.evaluate(equation , scope)
 
         //Update initial condition
         scope.x = next;
                 
+        // console.log(index + " : " + next);
         //Convert to FP and Get the 32 LSB 
         let lsb = Helpers.getLSB(next , 32);
 
@@ -83,7 +86,7 @@ Jimp.read(workerData.inputPath, (err , image) => {
         image.bitmap.data[idx + 3] = origRgba[3];   
 
         //Update the main thread with the progress
-        parentPort.postMessage( { progress :  (( index++ / numPixels ) * 100)} )
+        parentPort.postMessage( { progress : "PROGRESS " + Math.floor((( index++ / numPixels ) * 100)) + " %" } )
 
 
         //Logging
@@ -109,8 +112,9 @@ Jimp.read(workerData.inputPath, (err , image) => {
     let name = filename[0].replace("_encrypted" , "");
     name = name.replace("_decrypted" , "");
 
-    //Add _decrypted to the original file name 
-    let outputName = workerData.outputFolder + "/" + name + "_decrypted." + filename[1]; 
+    //Add _decrypted to the original file name -- For now always write to png files instead of original extension as this solves the problem of pixel information loss on resize.
+    // let outputName = workerData.outputFolder + "/" + name + "_decrypted." + filename[1]; 
+    let outputName = workerData.outputFolder + "/" + name + "_decrypted.png"; 
     
     //When finished , write the new image data to the output path
     image.write(outputName);

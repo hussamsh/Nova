@@ -4,13 +4,15 @@ import styled from 'styled-components';
 import ParametersInputSection from './ParametersInputSection';
 import OutputPathSelectSection from './OutputPathSelectSection';
 import { EncryptionAlgorithm } from '../interfaces/EncryptionAlgorithm';
+import OptimizeImageSection from './OptimizeImageSection';
+
 
 
 const Container = styled.div`
     overflow-y: visible;
 `
 
-const EnceryptionLabel = styled.p`
+const TextLabel = styled.p`
     color : #9E9E9E;
     letter-spacing: .5px;
     font-size: 0.82em;
@@ -46,7 +48,6 @@ const Hr =  styled.hr`
     border-top : 2px solid #7a7e84;
 `
 
-
  
 class RightPanel extends React.Component<{availableAlgorithms : Array<EncryptionAlgorithm>} , {equation : String ,params : Array<{symbol : String , name: String}>}> {
     
@@ -58,7 +59,8 @@ class RightPanel extends React.Component<{availableAlgorithms : Array<Encryption
 
     parametersInputSectionRef = React.createRef<ParametersInputSection>();
     outputPathSelectRef = React.createRef<OutputPathSelectSection>();
-    
+    optimizeRef = React.createRef<OptimizeImageSection>();
+
     constructor(props){
         super(props);
         this.state = {
@@ -74,7 +76,7 @@ class RightPanel extends React.Component<{availableAlgorithms : Array<Encryption
                 <div className="encryption-panel">
                     
                     <LabelWrapper>
-                        <EnceryptionLabel>ENCRYPTION TYPE</EnceryptionLabel>
+                        <TextLabel>ENCRYPTION TYPE</TextLabel>
                         {/* <ClickableLabel>Learn more</ClickableLabel> */}
                     </LabelWrapper>
                     
@@ -89,6 +91,8 @@ class RightPanel extends React.Component<{availableAlgorithms : Array<Encryption
                     <ParametersInputSection  ref={this.parametersInputSectionRef} params={this.state.params}/>
 
                     <Hr></Hr>
+
+                    <OptimizeImageSection ref={this.optimizeRef}/>
 
                     <OutputPathSelectSection ref={this.outputPathSelectRef}/>
 
@@ -112,11 +116,13 @@ class RightPanel extends React.Component<{availableAlgorithms : Array<Encryption
     getInputData(){
         let inputParams = this.parametersInputSectionRef.current.getParamsInput();
         let outputPath = this.outputPathSelectRef.current.getPath();
+        let optimize = this.optimizeRef.current.getValue();
 
         return {
             "selectedAlgorithm" : this.selectedAlgorithm.getName(),
             "inputParams" : inputParams,
-            "outputPath" : outputPath
+            "outputPath" : outputPath,
+            "optimizeImage" : optimize
         }
 
     }

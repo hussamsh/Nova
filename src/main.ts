@@ -130,7 +130,8 @@ ipcMain.on('crypto' , (event , args) => {
       algorithm : args["selectedAlgorithm"],
       parameters : parameters,
       inputPath : args["inputPath"],
-      outputFolder : args["outputPath"]
+      outputFolder : args["outputPath"],
+      optimize : args["optimizeImage"]
     }
   };
 

@@ -34,7 +34,7 @@ const TopBar = styled.div`
     -webkit-app-region: drag;
     background-color:${Palette.sidePanel};
     width:100%;
-    padding: 5px;
+    /* padding: 5px; */
     padding-left: 20px;
 
 `
@@ -62,8 +62,9 @@ const Wrapper = styled.div`
 `;
 
 const Logo = styled.img`
-    height : 25px;
-    width : 40px;
+    /* height : 25px; */
+    width : 45px;
+    padding : 5px;
 `
 
 ReactDOM.render(
@@ -230,6 +231,8 @@ ReactDOM.render(
             inputValid = false;
         }
 
+        // console.log(inputValid);
+
         return inputValid;
     }
 
@@ -239,5 +242,5 @@ ReactDOM.render(
     });
 
     ipcRenderer.on('progress' , (event , progress) => {
-        spinnerRef.current.setText("PROGRESS " + Math.floor(progress) + " %")
+        spinnerRef.current.setText(progress);
     });
