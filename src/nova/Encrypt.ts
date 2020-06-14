@@ -1,10 +1,9 @@
 import { workerData,parentPort } from 'worker_threads';
 import { Helpers } from "./Helpers";
-import { bignumber } from 'mathjs';
+import { bignumber, BigNumber } from 'mathjs';
 import BitSet from 'bitset';
 import Jimp from "jimp";
 import EncryptionTypes from './EncryptionTypes';
-const { performance , PerformanceObserver} = require('perf_hooks');
 
 //Equation of current encryption algorithm
 let equation;
@@ -19,29 +18,33 @@ switch(workerData.algorithm){
         equation = "r * ( (x - c) ^ 2) * ( c^2 - ((x - c) ^ 2) )";
         scope = {
             r : bignumber(workerData.parameters['Growth rate']),
-            x : bignumber(workerData.parameters['Inital condition']),
+            x : bignumber(workerData.parameters['Initial condition']),
             c : bignumber(workerData.parameters['Generalization parameter']),
         };
         break;
     case EncryptionTypes.Logistic.getName():
         equation = "r * x * ( 1 - x )";
         scope = {
-            x : bignumber(workerData.parameters['Inital condition']),
+            x : bignumber(workerData.parameters['Initial condition']),
             r : bignumber(workerData.parameters['Growth rate']),
         };
+        break;
+    case EncryptionTypes.Henon.getName():
+        scope = {
+            x : bignumber(workerData.parameters['x']),
+            y : bignumber(workerData.parameters['y']),
+            // a : bignumber(workerData.parameters['alpha']),
+            // b : bignumber(workerData.parameters['beta']),
+        }
         break;
 }
 
 
-// const obs = new PerformanceObserver((list) => {
-//     const entry = list.getEntries()[0]
-//     console.log(entry.name + " took : " + entry.duration + " ms")
-// });
+//Update progress
+parentPort.postMessage( { progress :  "Reading Image Data"} )
 
-// obs.observe({ entryTypes: ['measure'], buffered: true});
 
 //TODO : check if file path is still valid
-parentPort.postMessage( { progress :  "Reading Image Data"} )
 //Read image data from the input path
 Jimp.read(workerData.inputPath, (err , image) => {
   
@@ -50,11 +53,6 @@ Jimp.read(workerData.inputPath, (err , image) => {
     if (workerData.optimize && (image.bitmap.width > optimizeValue || image.bitmap.height > optimizeValue)){
         image.bitmap.width > image.bitmap.height ? image.resize(optimizeValue , Jimp.AUTO) : image.resize(Jimp.AUTO, optimizeValue);
     }
-
-    // image.normalize();
-    // let ff = workerData.inputPath.replace(/^.*[\\\/]/, '').split('.');
-
-    // image.write("resized."+ff[1]);
 
     //Create an empty Bitset which representes the previous pixel , initially is set to (0)
     let prevPixelBinary = new BitSet(0);
@@ -72,13 +70,11 @@ Jimp.read(workerData.inputPath, (err , image) => {
     image.scan(0 , 0 , image.bitmap.width , image.bitmap.height , (x ,y ,idx) => {
 
         //Evaluate next iteration of the map
-        let next = Helpers.math.evaluate(equation , scope)
+        let next = nextIteration();
         
         //Update initial condition
         scope.x = next;
            
-        // console.log(index + " : " + next);
-
         //Convert to FP and Get the 32 LSB 
         let lsb = Helpers.getLSB(next , 32);
 
@@ -142,8 +138,20 @@ Jimp.read(workerData.inputPath, (err , image) => {
     //When finished , write the new image data to the output path
     image.write(outputName);
 
-
-
-
 });
         
+function nextIteration() {
+
+    if(workerData.algorithm == EncryptionTypes.Henon.getName()) {
+
+        equation = "1 - (1.4 * (x^2)) + y";
+        
+        let result = Helpers.math.evaluate(equation , scope);
+
+        scope.y = Helpers.math.evaluate("0.3 * x" , scope);
+
+        return result;
+    }
+
+    return Helpers.math.evaluate(equation , scope);
+}

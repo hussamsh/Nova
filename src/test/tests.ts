@@ -89,7 +89,7 @@ describe("Double humped map cryptography" , function() {
           algorithm : EncryptionTypes.DH.getName(),
           parameters : {
             "Growth rate" : "1",
-            "Inital condition" : "1.2",
+            "Initial condition" : "1.2",
             "Generalization parameter" : "1"
           },
           inputPath : inputImagePath,
@@ -140,7 +140,7 @@ describe("Double humped map cryptography" , function() {
           algorithm : EncryptionTypes.DH.getName(),
           parameters : {
             "Growth rate" : "1",
-            "Inital condition" : "1.2",
+            "Initial condition" : "1.2",
             "Generalization parameter" : "1"
           },
           inputPath : encryptedImagePath,
@@ -201,7 +201,7 @@ describe("Logistic map cryptography" , function() {
           algorithm : EncryptionTypes.Logistic.getName(),
           parameters : {
             "Growth rate" : "3.72",
-            "Inital condition" : "0.4",
+            "Initial condition" : "0.4",
           },
           inputPath : inputImagePath,
           outputFolder : imageTestFolder
@@ -252,7 +252,117 @@ describe("Logistic map cryptography" , function() {
           algorithm : EncryptionTypes.Logistic.getName(),
           parameters : {
             "Growth rate" : "3.72",
-            "Inital condition" : "0.4",
+            "Initial condition" : "0.4",
+          },
+          inputPath : encryptedImagePath,
+          outputFolder : imageTestFolder
+        }
+      };
+    
+      let worker = new Worker('./dist/Decrypt.js', data);
+  
+      worker.on('exit' , code =>{
+        done();
+      });
+
+    });
+    
+    it("Decrypted file should be in the designated output path" , () => {
+      fs.existsSync(decryptedImagePath).should.equal(true);
+    });
+
+    let comparison;
+
+    it("Compare decrypted and original image" , (done) => {
+
+      resemble(inputImagePath).compareTo(decryptedImagePath).onComplete( data => {
+        comparison = data;
+        done();
+      });
+      
+    });
+
+    it("Is same dimension as original image" , () => {
+      ( comparison.isSameDimensions).should.equal(true);
+    });
+
+
+    it("Mismatch is zero" , () => {
+      ( comparison.misMatchPercentage == 0 ).should.equal(true);
+    });
+    
+    after( () => {
+      fs.unlinkSync(encryptedImagePath);
+      fs.unlinkSync(decryptedImagePath);
+    });
+    
+  });
+
+});
+
+describe("Henon map cryptography" , function() {
+  this.timeout(300000);
+
+  describe("Encrypt test image" , () => {
+
+    it("Encrypt Worker module called and completed successfully" , (done) => {
+      let data = {
+        workerData : {
+          algorithm : EncryptionTypes.Henon.getName(),
+          parameters : {
+            "x" : "0.6",
+            "y" : "0.4",
+          },
+          inputPath : inputImagePath,
+          outputFolder : imageTestFolder
+        }
+      };
+    
+      let worker = new Worker('./dist/Encrypt.js', data);
+  
+      worker.on('exit' , code =>{
+        done();
+      });
+
+    });
+    
+    it("Encrypted file should be in the designated output path" , () => {
+      fs.existsSync(encryptedImagePath).should.equal(true);
+    });
+
+    let comparison;
+
+    it("Compare encrypted and original image" , (done) => {
+
+      resemble(inputImagePath).compareTo(encryptedImagePath).onComplete( data => {
+        comparison = data;
+        done();
+      });
+      
+    });
+
+    it("Is same dimension as original image" , () => {
+      ( comparison.isSameDimensions).should.equal(true);
+    });
+
+
+    it("Mismatch over 95%" , () => {
+      ( comparison.misMatchPercentage > 95 ).should.equal(true);
+    });
+    
+    
+    
+  });
+
+  describe("Decrypt test image" , () => {
+
+    it("Decrypt Worker module called and completed successfully" , (done) => {
+      let data = {
+        workerData : {
+          algorithm : EncryptionTypes.Henon.getName(),
+          parameters : {
+            "x" : "0.6",
+            "y" : "0.4",
           },
           inputPath : encryptedImagePath,
           outputFolder : imageTestFolder

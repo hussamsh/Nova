@@ -20,7 +20,7 @@ export class DH implements EncryptionAlgorithm {
             },
             {
                 symbol : "x_n",
-                name  : "Inital condition"
+                name  : "Initial condition"
             },
             {
                 symbol : "c",
@@ -28,26 +28,5 @@ export class DH implements EncryptionAlgorithm {
             }
         ]
     }
-
-    // parameterValuesValid(growthRate : number , initialCondition : number, generalizationParameter : number) : boolean {
-        
-    //     let r = bignumber(growthRate);
-    //     let x = bignumber(initialCondition);
-    //     let c = bignumber(generalizationParameter);
-
-    //     let isValid = false;
-
-    //     if( x < Helpers.math.multiply(bignumber(2) , c) ){
-    //         isValid = true;
-    //     }
-
-    //     let cubed  = Helpers.math.cube(c);
-
-    //     if(r < Helpers.math.divide(bignumber(8) , cubed)){
-    //         isValid = true;
-    //     }
-
-    //     return isValid;
-    // }
 
 }

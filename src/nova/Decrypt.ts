@@ -16,17 +16,25 @@ switch(workerData.algorithm){
         equation = "r * ((x - c) ^ 2) * ( c^2 - ((x - c) ^ 2) )";
         scope = {
             r : bignumber(workerData.parameters['Growth rate']),
-            x : bignumber(workerData.parameters['Inital condition']),
+            x : bignumber(workerData.parameters['Initial condition']),
             c : bignumber(workerData.parameters['Generalization parameter']),
         };
         break;
     case EncryptionTypes.Logistic.getName():
         equation = "r * x * ( 1 - x )";
         scope = {
-            x : bignumber(workerData.parameters['Inital condition']),
+            x : bignumber(workerData.parameters['Initial condition']),
             r : bignumber(workerData.parameters['Growth rate']),
         };
         break;
+        case EncryptionTypes.Henon.getName():
+            scope = {
+                x : bignumber(workerData.parameters['x']),
+                y : bignumber(workerData.parameters['y']),
+                // a : bignumber(workerData.parameters['alpha']),
+                // b : bignumber(workerData.parameters['beta']),
+            }
+            break;
 }
 
 //TODO : check if file path is still valid
@@ -52,7 +60,7 @@ Jimp.read(workerData.inputPath, (err , image) => {
     image.scan(0 , 0 , image.bitmap.width , image.bitmap.height , (x ,y ,idx) => {
 
         //Evaluate next iteration of the map
-        let next = Helpers.math.evaluate(equation , scope)
+        let next = nextIteration();
 
         //Update initial condition
         scope.x = next;
@@ -120,3 +128,19 @@ Jimp.read(workerData.inputPath, (err , image) => {
     image.write(outputName);
 });
         
+
+function nextIteration() {
+
+    if(workerData.algorithm == EncryptionTypes.Henon.getName()) {
+
+        equation = "1 - (1.4 * (x^2)) + y";
+        
+        let result = Helpers.math.evaluate(equation , scope);
+
+        scope.y = Helpers.math.evaluate("0.3 * x" , scope);
+
+        return result;
+    }
+
+    return Helpers.math.evaluate(equation , scope);
+}
