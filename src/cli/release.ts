@@ -5,12 +5,17 @@ var archiver = require('archiver');
 import ora from './ora'
 
 const AWS = require('aws-sdk');
-var credentials = require('../../aws.json');
+let s3;
 
-const s3 = new AWS.S3({
-    accessKeyId: credentials.ID,
-    secretAccessKey: credentials.Secret
-});
+try {
+    var credentials = require('../../aws.json');
+    s3 = new AWS.S3({
+        accessKeyId: credentials.ID,
+        secretAccessKey: credentials.Secret
+    });    
+} catch (error) {
+    s3 = new AWS.S3();
+}
 
 var input = require('minimist')(process.argv.slice(2));
 
