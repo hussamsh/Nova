@@ -87,7 +87,7 @@ async function windowsRelease(){
     archive.finalize();
 
 
-    uploadFile(windowsPath);
+    uploadFile(windowsPath , "windows");
 
 }
 
@@ -96,34 +96,96 @@ function macRelease() {
  
     console.log("Release for mac");
 
-    
 }
 
-function linuxRelease() {
+async function linuxRelease() {
     
-    console.log("Release for linux");
+    let spinner = ora().start("Building linux release files");
+
+    await packager({
+        "quiet" : true,
+        "dir" : ".",
+        "platform" : "linux",
+        "overwrite" : true,
+        "asar" : true,
+        "arch" : "x64",
+        "icon" : "./app/assets/images/nova.png",
+        "out" : "release-builds",
+        "extraResource" : [
+            "./dist/Encrypt.js",
+            "./dist/Decrypt.js"
+        ]
+    });
+
+    spinner.succeed("Generated linux release builds");
+
+
+    const productionDir = __dirname + "/../production-builds";
+    const linuxPath = productionDir + "/nova-linux.zip";
+
+    if (!fs.existsSync(productionDir)){
+        fs.mkdirSync(productionDir);
+    }
+
+    spinner = ora().start("Compressing linux build files");
+
+
+    var output = fs.createWriteStream(linuxPath);
+    var archive = archiver('zip', {
+        zlib: { level: 9 }
+    });
+
+    archive.on('error', function(err) {
+        throw err;
+    });
+
+    output.on('close', function() {
+        spinner.succeed("Linux build Files zipped successfully");
+    });
+
+    archive.pipe(output);
+
+    archive.directory('./release-builds' , false);
+    archive.finalize();
+
+
+    uploadFile(linuxPath , "linux");
 
 }
 
 
-function uploadFile(path : string) {
+function uploadFile(path : string , platform : string) {
     const file = fs.readFileSync(path);
 
+    let key = "release/builds/";
+    switch(platform){
+        case "windows":
+            key += "nova-windows.zip";
+            break;
+        case "linux":
+            key += "nova-linux.zip";
+            break;
+        case "macOs":
+            key += "nova-macOs.zip";
+            break;
+    }
+
+    
     const params = {
-        Key : "release-builds/ruby.rar",
+        Key : key,
         Bucket : "com.hossamsherif.nova",
         Body : file,
         ACL:'public-read'
     }
 
-    let spinner = ora().start("Uploading windows build");
+    let spinner = ora().start("Uploading " + platform + " build");
 
     s3.upload(params, (err, data) => {
         if(err){
             throw err;
         }
 
-        spinner.succeed("Windows build uploaded sccessfully");
+        spinner.succeed(platform + " build uploaded sccessfully");
     })
 
 }
