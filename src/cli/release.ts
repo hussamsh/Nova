@@ -121,11 +121,11 @@ async function linuxRelease() {
 
 
     const productionDir = __dirname + "/../production-builds";
-    const linuxPath = productionDir + "/nova-linux.zip";
+    const linuxPath = productionDir + "./nova-linux.zip";
 
-    if (!fs.existsSync(productionDir)){
-        fs.mkdirSync(productionDir);
-    }
+    // if (!fs.existsSync(productionDir)){
+    //     fs.mkdirSync(productionDir);
+    // }
 
     spinner = ora().start("Compressing linux build files");
 
