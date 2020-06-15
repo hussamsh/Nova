@@ -33,7 +33,7 @@
 - [Getting Started](#getting-started)
   - [Download](#download)
   - [Usage](#usage)
-  - [Gotchas](#gotchas)
+  - [Remarks](#remarks)
 - [Security](#security)
 - [Examples](#examples)
 - [Roadmap](#roadmap)
@@ -56,13 +56,13 @@ I have already published part of my research if you would like to read more
 
 [![Product Name Screen Shot][product-screenshot]]()
 
-*Nova offers three chaotic maps that can be used for encryption / decryption*
+*Nova currently implements three chaotic maps*
 * **Logistic map** 
   Based on Robert May's [work](https://www.researchgate.net/publication/237005499_Simple_Mathematical_Models_With_Very_Complicated_Dynamics) back in 1976, the logistic map is the most iconic and heavily researched chaotic maps in his history.
 * **Double humped map**
   Popularized by [Coiteux](https://core.ac.uk/download/pdf/61733598.pdf) in 2014, the double humped map shows a double hump in it's first iteration - hence the name - and exhibits some unique behavior that mkes it highly suitable for cryptogragic operations.
-* **Tent map**
-    Based on Robert May's [work](https://www.researchgate.net/publication/237005499_Simple_Mathematical_Models_With_Very_Complicated_Dynamics) back in 1976, the logistic map is the most iconic and heavily researched chaotic maps in his history.
+* **Hénon map**
+    Another widely recognized map, introduced by Micheal Hénon as a simplified model of the Poincaré section of the Lorenz model. 
 <!-- **To avoid retyping too much info. Do a search and replace with your text editor for the following:** !-->
 <!-- `github_username`, `repo`, `twitter_handle`, `email`  -->
 
@@ -80,9 +80,9 @@ I have already published part of my research if you would like to read more
 ### Download
 Download the lateset stable distribution for your OS.
 
-<img src="./app/assets/images/microsoft.png" alt="Logo" width="160" >
-<img src="./app/assets/images/macos.png" alt="Logo" width="160" >
-<img src="./app/assets/images/linux.png" alt="Logo" width="160" >
+[![windows 10][windows]](https://example.com) 
+[![macos][macos]](https://example.com) 
+[![linux][linux]](https://example.com) 
 
 ### Usage
 
@@ -91,7 +91,7 @@ Download the lateset stable distribution for your OS.
 
 **Step 2 )**  Enter the desired params for your choosen map as well as an output directory for the processed image.
 
-<img src="./app/assets/images/choose-param.png" alt="Logo" height="400px" >
+<!-- <img src="./app/assets/images/choose-param.png" alt="Logo" height="400px" > -->
 
 <!-- [![Product Name Screen Shot][params-screenshot]]() -->
 
@@ -99,14 +99,14 @@ Download the lateset stable distribution for your OS.
 **Step 3 )**  Press Encrypt / Decrypt and wait for your image to be processed. Once finished you will find the processed image in the output directory with a suffix of either _encrypted / _decrypted.
 
 
-### Gotchas
+### Remarks
 
 * When choosing an image it's a good idea to compress / resize the image as much as possible. Especially resizing the image will yield a much better performance as the number of pixel is inversly propotional with the time needed for encryption.
   
 * Make sure that the values chosen as input makes since for the chosen map, not any two values will suffice. Each chaotic map has it's own ranges that it can operate in. Refer to [this page]() to learn more.
 
 * Be mindful of what parameters you use for encrypting an image and write them down or memorize them as any slight change will not yield a correct decryption of an image you need to enter the <b>exact</b> numbers you used for encryption, i.e ![3.725 \neq 3.724](https://render.githubusercontent.com/render/math?math=3.725%20%5Cneq%203.724).
-* For the Henon map there is no way - as far as I have researched - to check wether the initial parameters will diverge to it's attractor or infinity, therfore the encryption is stopped anytime the sequence diverges to infinity. 
+* For the Henon map there is no way - as far as I have researched - to check wether the initial parameters will diverge to the attractor or infinity, therfore the encryption is stopped anytime the sequence diverges to infinity. 
 ## Security
 
 One aspect of measuring the security of any encrypton is called `key space analysis` which is simply the number of keys - permutations - that an attacker has to through in order to find the parameters your are using.
@@ -187,3 +187,6 @@ TODO
 
 [product-screenshot]: ./app/assets/images/screenshot.png
 [params-screenshot]: ./app/assets/images/choose-param.png
+[windows]: ./app/assets/images/microsoft.png
+[macos]: ./app/assets/images/macos.png
+[linux]: ./app/assets/images/linux.png

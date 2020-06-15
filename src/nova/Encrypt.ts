@@ -40,7 +40,7 @@ switch(workerData.algorithm){
 }
 
 //Update progress
-parentPort.postMessage( { progress :  "Reading Image Data"} )
+parentPort.postMessage( { type : "progress" , progress :  "Reading Image Data"} )
 
 
 //TODO : check if file path is still valid

@@ -5,8 +5,9 @@ import { Helpers } from "./Helpers";
 export class Henon implements EncryptionAlgorithm {
     
     getName(): String {
-        return "Henon Map Encryption";
+        return "Hénon Map Encryption";
     }
+    
 
     getEquation(): String {
         return "f(x,y) = \\begin{cases} x_{n+1}=1-1.4x_{n}^{2}+y_{n} \\\\ y_{n+1}=0.3x_{n} \\end{cases}";

@@ -39,7 +39,7 @@ switch(workerData.algorithm){
 
 //TODO : check if file path is still valid
 
-parentPort.postMessage( { progress :  "Reading Image Data"} )
+parentPort.postMessage( { type : "progress", progress :  "Reading Image Data"} )
 //Read image data from the input path
 Jimp.read(workerData.inputPath, (err , image) => {
     
@@ -67,7 +67,7 @@ Jimp.read(workerData.inputPath, (err , image) => {
                 
         // console.log(index + " : " + next);
         //Convert to FP and Get the 32 LSB 
-        let lsb = Helpers.getLSB(next , 32);
+        let lsb = Helpers.getLSB(next.toNumber() , 32);
 
         //Extract RGBA values of the current pixel
         let red = image.bitmap.data[idx + 0];
@@ -94,8 +94,7 @@ Jimp.read(workerData.inputPath, (err , image) => {
         image.bitmap.data[idx + 3] = origRgba[3];   
 
         //Update the main thread with the progress
-        parentPort.postMessage( { progress : "PROGRESS " + Math.floor((( index++ / numPixels ) * 100)) + " %" } )
-
+        parentPort.postMessage( { type : "progress" , progress : "PROGRESS " + Math.floor((( index++ / numPixels ) * 100)) + " %" } )
 
         //Logging
         if(false){
@@ -139,6 +138,11 @@ function nextIteration() {
 
         scope.y = Helpers.math.evaluate("0.3 * x" , scope);
 
+        if(!result.isFinite()){
+            parentPort.postMessage( { type : "invalid-henon" } )
+            process.exit();
+        }
+        
         return result;
     }
 
