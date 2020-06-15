@@ -1,6 +1,6 @@
 'use strict';
 const readline = require('readline');
-const chalk = require('chalk');
+// const chalk = require('chalk');
 const cliCursor = require('cli-cursor');
 const cliSpinners = require('cli-spinners');
 const logSymbols = require('log-symbols');
@@ -207,9 +207,9 @@ class Ora {
 		const {frames} = this.spinner;
 		let frame = frames[this.frameIndex];
 
-		if (this.color) {
-			frame = chalk[this.color](frame);
-		}
+		// if (this.color) {
+		// 	frame = chalk[this.color](frame);
+		// }
 
 		this.frameIndex = ++this.frameIndex % frames.length;
 		const fullPrefixText = (typeof this.prefixText === 'string' && this.prefixText !== '') ? this.prefixText + ' ' : '';
