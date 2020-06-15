@@ -5,6 +5,8 @@ var resemble = require('node-resemble-js');
 import { create, all } from 'mathjs';
 
 
+
+
 export class Helpers {
 
         //mathjs configuration - use BigNumbers of precsion 64 bits
@@ -30,6 +32,7 @@ export class Helpers {
 
         //Convert the given number to IEEE754 double precision floating point representation (64 bits) 
         let fp : string = toFP(input);
+        // return;
         
         //Get the LSB of the FP up to (x) places
         let lsb = fp.substr(fp.length - x);

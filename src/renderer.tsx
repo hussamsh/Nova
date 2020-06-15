@@ -14,6 +14,7 @@ import styled from 'styled-components';
 import fs from 'fs';
 import { ipcRenderer } from "electron";
 import { Spinner } from "./components/Spinner";
+import { Helpers } from './nova/Helpers';
 
 //References to all react components in view
 let controlPanelRef = React.createRef<RightPanel>();
@@ -114,8 +115,8 @@ ReactDOM.render(
 
     function onCryptoOperationEnded(){
         busy = false;
-        spinnerRef.current.setText("");
         spinnerRef.current.hide();
+        spinnerRef.current.setText("Initializing");
         encryptButtonRef.current.enable();
         decryptButtonRef.current.enable();
     }
@@ -205,9 +206,28 @@ ReactDOM.render(
                         controlPanelRef.current.onInputValidationFail(parameters[1].name , "x must be <= 4");
                         inputValid = false;
                     }
+
+                }
+                break;
+                case EncryptionTypes.Henon.getName():
+                {
+                    // let x = +(parameters[0].value);
+                    // let y = +(parameters[1].value);
+
+                    // if(x < -1.5 || x > 1.5 ){
+                    //     controlPanelRef.current.onInputValidationFail(parameters[0].name, "x ∈ [-1.5,1.5]");
+                    //     inputValid = false;
+                    // }
+
+                    // if(y < -0.4 || y > 0.4 ){
+                    //     controlPanelRef.current.onInputValidationFail(parameters[1].name, "y ∈ [0.4,0.4]");
+                    //     inputValid = false;
+                    // }
+
+                    // console.log(Helpers.math.evaluate('sqrt( (y+1) / (1.4) )' , { y : y } ).toString());
+
                     
                 }
-
                 break;
             }
         }
@@ -243,4 +263,14 @@ ReactDOM.render(
 
     ipcRenderer.on('progress' , (event , progress) => {
         spinnerRef.current.setText(progress);
+    });
+
+    ipcRenderer.on('invalid-henon' , (event , args) => {
+
+        let currentState = controlPanelRef.current.getInputData();
+        let parameters = currentState["inputParams"];
+
+        controlPanelRef.current.onInputValidationFail(parameters[0].name, "Invalid values");
+        controlPanelRef.current.onInputValidationFail(parameters[1].name, "Invalid values");
+
     });

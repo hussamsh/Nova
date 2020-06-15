@@ -39,7 +39,6 @@ switch(workerData.algorithm){
         break;
 }
 
-
 //Update progress
 parentPort.postMessage( { progress :  "Reading Image Data"} )
 
@@ -69,14 +68,15 @@ Jimp.read(workerData.inputPath, (err , image) => {
     //After reading the image, scan it's pixels
     image.scan(0 , 0 , image.bitmap.width , image.bitmap.height , (x ,y ,idx) => {
 
+        // console.log("next iteration");
         //Evaluate next iteration of the map
         let next = nextIteration();
         
         //Update initial condition
         scope.x = next;
-           
+
         //Convert to FP and Get the 32 LSB 
-        let lsb = Helpers.getLSB(next , 32);
+        let lsb = Helpers.getLSB(next.toNumber() , 32);
 
         //Extract RGBA values of the current pixel
         let red = image.bitmap.data[idx + 0];
@@ -95,7 +95,7 @@ Jimp.read(workerData.inputPath, (err , image) => {
 
         //Convert result back to RGBA
         let encRgba = Helpers.bin2Rgba(encryptedPixelBinary);
-        
+      
         //Set the new pixel value 
         image.bitmap.data[idx + 0] = encRgba[0];
         image.bitmap.data[idx + 1] = encRgba[1];
@@ -103,7 +103,7 @@ Jimp.read(workerData.inputPath, (err , image) => {
         image.bitmap.data[idx + 3] = encRgba[3];   
 
         //Update the main thread with the progress
-        parentPort.postMessage( { progress : "PROGRESS " + Math.floor((( index++ / numPixels ) * 100)) + " %" } )
+        parentPort.postMessage( { type : "progress" , progress : "PROGRESS " + Math.floor((( index++ / numPixels ) * 100)) + " %" } )
 
          //Logging
          if(false){
@@ -117,11 +117,9 @@ Jimp.read(workerData.inputPath, (err , image) => {
          
         //Update the previous pixel value
         prevPixelBinary = encryptedPixelBinary;
+        return;
 
     });
-
-    // performance.mark('end');
-    // performance.measure('Encryption for ' + '(' + image.bitmap.width * image.bitmap.height + ' pixels)', 'start' , 'end');
 
     //Get filename
     let filename = workerData.inputPath.replace(/^.*[\\\/]/, '').split('.');
@@ -143,12 +141,17 @@ Jimp.read(workerData.inputPath, (err , image) => {
 function nextIteration() {
 
     if(workerData.algorithm == EncryptionTypes.Henon.getName()) {
-
+       
         equation = "1 - (1.4 * (x^2)) + y";
-        
+
         let result = Helpers.math.evaluate(equation , scope);
 
         scope.y = Helpers.math.evaluate("0.3 * x" , scope);
+
+        if(!result.isFinite()){
+            parentPort.postMessage( { type : "invalid-henon" } )
+            process.exit();
+        }
 
         return result;
     }

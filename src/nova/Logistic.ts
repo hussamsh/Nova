@@ -18,7 +18,7 @@ export class Logistic implements EncryptionAlgorithm{
                 name : "Initial condition"
             },
             {
-                symbol : "λ",
+                symbol : "\\lambda",
                 name : "Growth rate"
             }
         ]

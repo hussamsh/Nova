@@ -147,7 +147,14 @@ ipcMain.on('crypto' , (event , args) => {
 
     // Listeners for work progress / finish of the worker thread, each listener is tied to the corresponding callback defined above
     currentWorker.on('message' , data => {
-        onProgress(data.progress);
+        switch (data.type) {
+          case "progress":
+            onProgress(data.progress);            
+            break;
+          case "invalid-henon":
+            event.reply('invalid-henon');
+            break;
+        }
     });
 
     currentWorker.on('exit' , code =>{

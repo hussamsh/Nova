@@ -106,7 +106,7 @@ Download the lateset stable distribution for your OS.
 * Make sure that the values chosen as input makes since for the chosen map, not any two values will suffice. Each chaotic map has it's own ranges that it can operate in. Refer to [this page]() to learn more.
 
 * Be mindful of what parameters you use for encrypting an image and write them down or memorize them as any slight change will not yield a correct decryption of an image you need to enter the <b>exact</b> numbers you used for encryption, i.e ![3.725 \neq 3.724](https://render.githubusercontent.com/render/math?math=3.725%20%5Cneq%203.724).
-
+* For the Henon map there is no way - as far as I have researched - to check wether the initial parameters will diverge to it's attractor or infinity, therfore the encryption is stopped anytime the sequence diverges to infinity. 
 ## Security
 
 One aspect of measuring the security of any encrypton is called `key space analysis` which is simply the number of keys - permutations - that an attacker has to through in order to find the parameters your are using.
