@@ -14,6 +14,7 @@ import styled from 'styled-components';
 import fs from 'fs';
 import { ipcRenderer } from "electron";
 import { Spinner } from "./components/Spinner";
+import { Helpers } from './nova/Helpers';
 
 //References to all react components in view
 let controlPanelRef = React.createRef<RightPanel>();
@@ -32,34 +33,60 @@ const ButtonWrapper = styled.div`
 const TopBar = styled.div`
     -webkit-user-select: none;
     -webkit-app-region: drag;
-    background-color:#1d2229;
+    background-color:${Palette.sidePanel};
     width:100%;
+    /* padding: 5px; */
+    padding-left: 20px;
+
 `
 
 const ImageAreaWrapper = styled.div`
-    background-color : ${Palette.mainPanel};
+    background: rgb(25,46,69);
+    background: radial-gradient(circle, rgba(25,46,69,1) 0%, rgba(20,30,48,1) 100%);
+    /* background-color : ${Palette.mainPanel}; */
+    border-top-right-radius : 20px;
     height: inherit;
     margin: 0px;
     padding: 0px;
 `
 
+const RightPanelWrapper = styled.div`
+    margin: 0px;
+    padding-left : 10px;
+    padding-right: 10px;
+    background-color: ${Palette.sidePanel};
+`
+
+const Wrapper = styled.div`
+    height:inherit;
+    background-color : ${Palette.sidePanel};
+`;
+
+const Logo = styled.img`
+    /* height : 25px; */
+    width : 45px;
+    padding : 5px;
+`
 
 ReactDOM.render(
-    <div className="container-fluid" style={{height:'inherit'}}>
+
+    <Wrapper className="container-fluid">
+
         <div className="row">
-            <TopBar>  
+            <TopBar className="d-flex align-items-center">
+                <Logo src="./assets/images/nova.png" />
                 <TopControlButtons />
             </TopBar>
         </div>
         
-        <div className="row" style={{height:'inherit'}}>
+        <div className="row" style={{height:'98%'}}>
 
             <ImageAreaWrapper className="col-9">
                 <Spinner ref={spinnerRef}  onCancelClicked={ () => onCancelOperation() }/>
                 <ImageInput ref={imageInputRef}/>
             </ImageAreaWrapper>
 
-            <div className="col-3" style={{backgroundColor:Palette.sidePanel, padding:"0px", margin:"0px"}}>
+            <RightPanelWrapper className="col-3">
 
                 <div className="right-wrapper" style={{padding:"15px"}}>
                     <RightPanel availableAlgorithms={EncryptionTypes.algorithms} ref={controlPanelRef} />
@@ -71,11 +98,11 @@ ReactDOM.render(
 
                 </div>
                 
-            </div>
+            </RightPanelWrapper>
 
         </div>
         
-    </div>
+    </Wrapper>
     
     , document.getElementById('main'));
 
@@ -88,8 +115,8 @@ ReactDOM.render(
 
     function onCryptoOperationEnded(){
         busy = false;
-        spinnerRef.current.setText("");
         spinnerRef.current.hide();
+        spinnerRef.current.setText("Initializing");
         encryptButtonRef.current.enable();
         decryptButtonRef.current.enable();
     }
@@ -132,6 +159,7 @@ ReactDOM.render(
     function validateInput() : boolean {
         //Get input that was returned from parameters panel
         let currentState = controlPanelRef.current.getInputData();
+        let parameters = currentState["inputParams"];
         let inputValid = true;
 
         //Validate that no parameter is having empty values
@@ -142,6 +170,68 @@ ReactDOM.render(
             }
         });
 
+        if (inputValid){
+            switch(currentState["selectedAlgorithm"]){
+                case EncryptionTypes.DH.getName(): 
+                {
+                    let r = +(parameters[0].value);
+                    let x = +(parameters[1].value);
+                    let c = +(parameters[2].value);
+
+                    if( x > 2 * c ){
+                        controlPanelRef.current.onInputValidationFail(parameters[1].name , "x must be <= (2c)");
+                        inputValid = false;
+                    }
+            
+                    let cubed  = Math.pow(c , 3);
+                    
+                    if(r > 8 / cubed){
+                        controlPanelRef.current.onInputValidationFail(parameters[0].name , "λ must be <= (8/c^3)");
+                        inputValid = false;
+                    }
+                }
+                
+                break;
+                case EncryptionTypes.Logistic.getName():
+                {
+                    let x = +(parameters[0].value);
+                    let r = +(parameters[1].value);
+
+                    if(x > 1){
+                        controlPanelRef.current.onInputValidationFail(parameters[0].name , "x must be <= 1");
+                        inputValid = false;
+                    }
+
+                    if(r > 4){
+                        controlPanelRef.current.onInputValidationFail(parameters[1].name , "x must be <= 4");
+                        inputValid = false;
+                    }
+
+                }
+                break;
+                case EncryptionTypes.Henon.getName():
+                {
+                    // let x = +(parameters[0].value);
+                    // let y = +(parameters[1].value);
+
+                    // if(x < -1.5 || x > 1.5 ){
+                    //     controlPanelRef.current.onInputValidationFail(parameters[0].name, "x ∈ [-1.5,1.5]");
+                    //     inputValid = false;
+                    // }
+
+                    // if(y < -0.4 || y > 0.4 ){
+                    //     controlPanelRef.current.onInputValidationFail(parameters[1].name, "y ∈ [0.4,0.4]");
+                    //     inputValid = false;
+                    // }
+
+                    // console.log(Helpers.math.evaluate('sqrt( (y+1) / (1.4) )' , { y : y } ).toString());
+
+                    
+                }
+                break;
+            }
+        }
+        
 
         //Validate if the output path exists or not
         if (currentState.outputPath.length == 0){
@@ -161,6 +251,8 @@ ReactDOM.render(
             inputValid = false;
         }
 
+        // console.log(inputValid);
+
         return inputValid;
     }
 
@@ -170,5 +262,15 @@ ReactDOM.render(
     });
 
     ipcRenderer.on('progress' , (event , progress) => {
-        spinnerRef.current.setText("PROGRESS " + Math.floor(progress) + " %")
+        spinnerRef.current.setText(progress);
+    });
+
+    ipcRenderer.on('invalid-henon' , (event , args) => {
+
+        let currentState = controlPanelRef.current.getInputData();
+        let parameters = currentState["inputParams"];
+
+        controlPanelRef.current.onInputValidationFail(parameters[0].name, "Invalid values");
+        controlPanelRef.current.onInputValidationFail(parameters[1].name, "Invalid values");
+
     });

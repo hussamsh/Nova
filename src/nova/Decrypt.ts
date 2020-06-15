@@ -1,19 +1,9 @@
 import { workerData,parentPort } from 'worker_threads';
 import { Helpers } from "./Helpers";
-import { create, all, bignumber } from 'mathjs';
+import { bignumber } from 'mathjs';
 import BitSet from 'bitset';
 import Jimp from "jimp";
 import EncryptionTypes from './EncryptionTypes';
-
-
-//mathjs configuration - use BigNumbers of precsion 64 bits
-const config = {
-    number : 'BigNumber',
-    precision : 64
-}
-
-//Create mathjs object
-const math = create(all , config);
 
 //Equation of current encryption algorithm
 let equation;
@@ -26,22 +16,32 @@ switch(workerData.algorithm){
         equation = "r * ((x - c) ^ 2) * ( c^2 - ((x - c) ^ 2) )";
         scope = {
             r : bignumber(workerData.parameters['Growth rate']),
-            x : bignumber(workerData.parameters['Inital condition']),
+            x : bignumber(workerData.parameters['Initial condition']),
             c : bignumber(workerData.parameters['Generalization parameter']),
         };
         break;
     case EncryptionTypes.Logistic.getName():
         equation = "r * x * ( 1 - x )";
         scope = {
-            x : bignumber(workerData.parameters['Inital condition']),
+            x : bignumber(workerData.parameters['Initial condition']),
             r : bignumber(workerData.parameters['Growth rate']),
         };
         break;
+        case EncryptionTypes.Henon.getName():
+            scope = {
+                x : bignumber(workerData.parameters['x']),
+                y : bignumber(workerData.parameters['y']),
+                // a : bignumber(workerData.parameters['alpha']),
+                // b : bignumber(workerData.parameters['beta']),
+            }
+            break;
 }
 
 //TODO : check if file path is still valid
+
+parentPort.postMessage( { type : "progress", progress :  "Reading Image Data"} )
 //Read image data from the input path
-Jimp.read(workerData.inputPath.replace("file:///" , ""), (err , image) => {
+Jimp.read(workerData.inputPath, (err , image) => {
     
     if(err) throw err;
 
@@ -54,19 +54,20 @@ Jimp.read(workerData.inputPath.replace("file:///" , ""), (err , image) => {
         Second - Set a variable index to know how many pixels are left for decrypting
     */
     let numPixels = image.bitmap.width * image.bitmap.height;
-    let index = 0
+    let index = 0;
 
     //After reading the image, scan it's pixels
     image.scan(0 , 0 , image.bitmap.width , image.bitmap.height , (x ,y ,idx) => {
-        
+
         //Evaluate next iteration of the map
-        let next = math.evaluate(equation , scope)
+        let next = nextIteration();
 
         //Update initial condition
         scope.x = next;
                 
+        // console.log(index + " : " + next);
         //Convert to FP and Get the 32 LSB 
-        let lsb = Helpers.getLSB(next , 32);
+        let lsb = Helpers.getLSB(next.toNumber() , 32);
 
         //Extract RGBA values of the current pixel
         let red = image.bitmap.data[idx + 0];
@@ -93,8 +94,7 @@ Jimp.read(workerData.inputPath.replace("file:///" , ""), (err , image) => {
         image.bitmap.data[idx + 3] = origRgba[3];   
 
         //Update the main thread with the progress
-        parentPort.postMessage( { progress :  (( index++ / numPixels ) * 100)} )
-
+        parentPort.postMessage( { type : "progress" , progress : "PROGRESS " + Math.floor((( index++ / numPixels ) * 100)) + " %" } )
 
         //Logging
         if(false){
@@ -119,10 +119,32 @@ Jimp.read(workerData.inputPath.replace("file:///" , ""), (err , image) => {
     let name = filename[0].replace("_encrypted" , "");
     name = name.replace("_decrypted" , "");
 
-    //Add _decrypted to the original file name 
-    let outputName = workerData.outputFolder + "/" + name + "_decrypted." + filename[1]; 
+    //Add _decrypted to the original file name -- For now always write to png files instead of original extension as this solves the problem of pixel information loss on resize.
+    // let outputName = workerData.outputFolder + "/" + name + "_decrypted." + filename[1]; 
+    let outputName = workerData.outputFolder + "/" + name + "_decrypted.png"; 
     
     //When finished , write the new image data to the output path
     image.write(outputName);
 });
         
+
+function nextIteration() {
+
+    if(workerData.algorithm == EncryptionTypes.Henon.getName()) {
+
+        equation = "1 - (1.4 * (x^2)) + y";
+        
+        let result = Helpers.math.evaluate(equation , scope);
+
+        scope.y = Helpers.math.evaluate("0.3 * x" , scope);
+
+        if(!result.isFinite()){
+            parentPort.postMessage( { type : "invalid-henon" } )
+            process.exit();
+        }
+        
+        return result;
+    }
+
+    return Helpers.math.evaluate(equation , scope);
+}

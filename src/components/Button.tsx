@@ -1,7 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import Palette from '../palette';
-import Tippy from '@tippyjs/react'
 
  
 const StyledButton = styled.button`
@@ -13,9 +12,9 @@ const StyledButton = styled.button`
     padding-right : 10px;
     /* font-family : "Montserrat"; */
     font-weight : 900;
-    color : ${Palette.materialBlack};
+    font-size: 0.95em;
+    /* color : ${Palette.materialBlack}; */
     background-color : ${Palette.accentColor};
-
     &:focus{
         outline : none;
     }

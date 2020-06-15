@@ -1,4 +1,5 @@
 import { EncryptionAlgorithm } from "../interfaces/EncryptionAlgorithm";
+import { Helpers } from "./Helpers";
 
 //Double humped map encryption information
 export class DH implements EncryptionAlgorithm {
@@ -19,7 +20,7 @@ export class DH implements EncryptionAlgorithm {
             },
             {
                 symbol : "x_n",
-                name  : "Inital condition"
+                name  : "Initial condition"
             },
             {
                 symbol : "c",

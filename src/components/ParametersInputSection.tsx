@@ -1,10 +1,8 @@
 import * as React from 'react';
-import LabeledTextInput from './LabeledTextInput';
+import TopLabelTextInput from './ParametersInput';
 import { v4 as uuidv4 } from 'uuid';
 
-const textInputStyle = {
-    marginTop : "10px"
-}
+
 
 interface ParameterValue {
     name : String,
@@ -14,17 +12,17 @@ interface ParameterValue {
 class ParametersInputSection extends React.Component<{ params : Array<{symbol : String, name : String}>}, {}> {
 
     inputElements;
-    references  : Array<React.RefObject<LabeledTextInput>> = [];
+    references  : Array<React.RefObject<TopLabelTextInput>> = [];
 
     render() { 
         
         this.inputElements = this.props.params.map( (element , index ) => {
-            let labelText = element.name  + " (\\(" + element.symbol + "\\))";
-            let reference = React.createRef<LabeledTextInput>();
+            let labelText = " \\(" + element.symbol + "\\)";
+            let reference = React.createRef<TopLabelTextInput>();
             this.references[index] = reference;
 
             return (
-                <LabeledTextInput name={element.name} ref={reference} type="number"  style={textInputStyle} label={labelText} key={uuidv4()}></LabeledTextInput>
+                <TopLabelTextInput name={element.name} ref={reference} type="number" style={{marginTop:"10px"}} label={labelText} key={uuidv4()}></TopLabelTextInput>
             )
         });
 

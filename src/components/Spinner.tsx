@@ -12,6 +12,7 @@ const MainWrapper = styled.div`
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    border-top-right-radius: 20px;
 
 `
 
@@ -49,7 +50,7 @@ export class Spinner extends React.Component<{onCancelClicked ?: Function} , {}>
                     <div className="ring"></div>
                 </SpinnerWrapper>
 
-                <ProgressText id="progress"></ProgressText>
+                <ProgressText id="progress">Initializing</ProgressText>
 
                 <CancelButton type="button" className="btn btn-outline-light" onClick = {() => this.props.onCancelClicked()}>Cancel</CancelButton>
 

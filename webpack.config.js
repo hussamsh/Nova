@@ -4,9 +4,6 @@ const path = require("path");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const nodeExternals = require('webpack-node-externals');
 
-//For histogram js
-const nodeLoader =  require('node-loader');
-
 
 const commonConfig = {
     node: {
@@ -32,7 +29,7 @@ const commonConfig = {
         {
           test: /\.(ts|tsx)$/,
           exclude: /node_modules/,
-          loader: "ts-loader"
+          loader: ["ts-loader"]
         },
         {
           test: /\.css$/i,
@@ -106,7 +103,9 @@ module.exports = [
               Decrypt : './src/nova/Decrypt.ts',
               Encrypt : './src/nova/Encrypt.ts' ,
               tests : './src/test/tests.ts',
+              release : './src/cli/release.ts',
             },
           },
           commonConfig),
+
 ]

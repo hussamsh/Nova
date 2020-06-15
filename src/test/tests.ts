@@ -7,7 +7,7 @@ import EncryptionTypes from '../nova/EncryptionTypes';
 const { Worker } = require('worker_threads');
 var resemble = require('node-resemble-js');
 
-let imageTestFolder = __dirname + "/../app/assets/images/testing";
+let imageTestFolder = __dirname + "/../app/assets/images";
 let inputImagePath = imageTestFolder + "/test_image.png";
 let encryptedImagePath = imageTestFolder +"/test_image_encrypted.png";
 let decryptedImagePath = imageTestFolder +"/test_image_decrypted.png";
@@ -19,6 +19,7 @@ describe("Helpers" , () => {
     it("Convert 0" , () => {
       Helpers.dec2bin(0).should.equal("00000000");
     });
+
 
     it("Convert 1" , () => {
       Helpers.dec2bin(255).should.equal("11111111");
@@ -80,8 +81,6 @@ describe("Helpers" , () => {
 describe("Double humped map cryptography" , function() {
   this.timeout(300000);
 
- 
-
   describe("Encrypt test image" , () => {
 
     it("Encrypt Worker module called and completed successfully" , (done) => {
@@ -90,7 +89,7 @@ describe("Double humped map cryptography" , function() {
           algorithm : EncryptionTypes.DH.getName(),
           parameters : {
             "Growth rate" : "1",
-            "Inital condition" : "1.2",
+            "Initial condition" : "1.2",
             "Generalization parameter" : "1"
           },
           inputPath : inputImagePath,
@@ -130,8 +129,6 @@ describe("Double humped map cryptography" , function() {
       ( comparison.misMatchPercentage > 95 ).should.equal(true);
     });
     
-    
-    
   });
 
   describe("Decrypt test image" , () => {
@@ -143,7 +140,7 @@ describe("Double humped map cryptography" , function() {
           algorithm : EncryptionTypes.DH.getName(),
           parameters : {
             "Growth rate" : "1",
-            "Inital condition" : "1.2",
+            "Initial condition" : "1.2",
             "Generalization parameter" : "1"
           },
           inputPath : encryptedImagePath,
@@ -184,10 +181,10 @@ describe("Double humped map cryptography" , function() {
     });
 
     
-    // after( () => {
-    //   fs.unlinkSync(encryptedImagePath);
-    //   fs.unlinkSync(decryptedImagePath);
-    // });
+    after( () => {
+      fs.unlinkSync(encryptedImagePath);
+      fs.unlinkSync(decryptedImagePath);
+    });
     
   });
 
@@ -196,11 +193,6 @@ describe("Double humped map cryptography" , function() {
 describe("Logistic map cryptography" , function() {
   this.timeout(300000);
 
-  let imageTestFolder = __dirname + "/../app/assets/images/testing";
-  let inputImagePath = imageTestFolder + "/test_image.png";
-  let encryptedImagePath = imageTestFolder +"/test_image_encrypted.png";
-  let decryptedImagePath = imageTestFolder +"/test_image_decrypted.png";
-
   describe("Encrypt test image" , () => {
 
     it("Encrypt Worker module called and completed successfully" , (done) => {
@@ -209,7 +201,7 @@ describe("Logistic map cryptography" , function() {
           algorithm : EncryptionTypes.Logistic.getName(),
           parameters : {
             "Growth rate" : "3.72",
-            "Inital condition" : "0.4",
+            "Initial condition" : "0.4",
           },
           inputPath : inputImagePath,
           outputFolder : imageTestFolder
@@ -260,7 +252,7 @@ describe("Logistic map cryptography" , function() {
           algorithm : EncryptionTypes.Logistic.getName(),
           parameters : {
             "Growth rate" : "3.72",
-            "Inital condition" : "0.4",
+            "Initial condition" : "0.4",
           },
           inputPath : encryptedImagePath,
           outputFolder : imageTestFolder
@@ -299,10 +291,120 @@ describe("Logistic map cryptography" , function() {
       ( comparison.misMatchPercentage == 0 ).should.equal(true);
     });
     
-    // after( () => {
-    //   fs.unlinkSync(encryptedImagePath);
-    //   fs.unlinkSync(decryptedImagePath);
-    // });
+    after( () => {
+      fs.unlinkSync(encryptedImagePath);
+      fs.unlinkSync(decryptedImagePath);
+    });
+    
+  });
+
+});
+
+describe("Henon map cryptography" , function() {
+  this.timeout(300000);
+
+  describe("Encrypt test image" , () => {
+
+    it("Encrypt Worker module called and completed successfully" , (done) => {
+      let data = {
+        workerData : {
+          algorithm : EncryptionTypes.Henon.getName(),
+          parameters : {
+            "x" : "0.6",
+            "y" : "0.4",
+          },
+          inputPath : inputImagePath,
+          outputFolder : imageTestFolder
+        }
+      };
+    
+      let worker = new Worker('./dist/Encrypt.js', data);
+  
+      worker.on('exit' , code =>{
+        done();
+      });
+
+    });
+    
+    it("Encrypted file should be in the designated output path" , () => {
+      fs.existsSync(encryptedImagePath).should.equal(true);
+    });
+
+    let comparison;
+
+    it("Compare encrypted and original image" , (done) => {
+
+      resemble(inputImagePath).compareTo(encryptedImagePath).onComplete( data => {
+        comparison = data;
+        done();
+      });
+      
+    });
+
+    it("Is same dimension as original image" , () => {
+      ( comparison.isSameDimensions).should.equal(true);
+    });
+
+
+    it("Mismatch over 95%" , () => {
+      ( comparison.misMatchPercentage > 95 ).should.equal(true);
+    });
+    
+    
+    
+  });
+
+  describe("Decrypt test image" , () => {
+
+    it("Decrypt Worker module called and completed successfully" , (done) => {
+      let data = {
+        workerData : {
+          algorithm : EncryptionTypes.Henon.getName(),
+          parameters : {
+            "x" : "0.6",
+            "y" : "0.4",
+          },
+          inputPath : encryptedImagePath,
+          outputFolder : imageTestFolder
+        }
+      };
+    
+      let worker = new Worker('./dist/Decrypt.js', data);
+  
+      worker.on('exit' , code =>{
+        done();
+      });
+
+    });
+    
+    it("Decrypted file should be in the designated output path" , () => {
+      fs.existsSync(decryptedImagePath).should.equal(true);
+    });
+
+    let comparison;
+
+    it("Compare decrypted and original image" , (done) => {
+
+      resemble(inputImagePath).compareTo(decryptedImagePath).onComplete( data => {
+        comparison = data;
+        done();
+      });
+      
+    });
+
+    it("Is same dimension as original image" , () => {
+      ( comparison.isSameDimensions).should.equal(true);
+    });
+
+
+    it("Mismatch is zero" , () => {
+      ( comparison.misMatchPercentage == 0 ).should.equal(true);
+    });
+    
+    after( () => {
+      fs.unlinkSync(encryptedImagePath);
+      fs.unlinkSync(decryptedImagePath);
+    });
     
   });
 

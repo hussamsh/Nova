@@ -1,6 +1,7 @@
 import { app, BrowserWindow , globalShortcut, dialog, ipcMain} from "electron";
 import * as path from "path";
 const { Worker, isMainThread } = require('worker_threads');
+const isDev = require('electron-is-dev');
 
 let mainWindow: Electron.BrowserWindow;
 let currentWorker;
@@ -14,9 +15,9 @@ function createWindow() {
     },
     width: 1200,
     height: 700,
-    minWidth : 1100,
+    minWidth : 1200,
     minHeight : 700,
-    frame : false
+    frame : false,
   });
 
   // and load the index.html of the app.
@@ -44,13 +45,20 @@ function createWindow() {
   globalShortcut.register('CommandOrControl+Shift+I', function() {
 		mainWindow.webContents.openDevTools();
   })
-
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", createWindow);
+
+app.on('before-quit' , (event) => {
+  if(currentWorker){
+    currentWorker.removeAllListeners('message');
+    currentWorker.removeAllListeners('exit');
+    currentWorker.terminate();
+  }
+});
 
 // Quit when all windows are closed.
 app.on("window-all-closed", () => {
@@ -104,6 +112,9 @@ ipcMain.on('crypto' , (event , args) => {
 
   let onFinish = () => {
     event.reply('finished');
+    currentWorker.removeAllListeners('message');
+    currentWorker.removeAllListeners('exit');
+    currentWorker = null;
   };
 
    //Parameters that is unique to the current cryptographic algorithm
@@ -119,7 +130,8 @@ ipcMain.on('crypto' , (event , args) => {
       algorithm : args["selectedAlgorithm"],
       parameters : parameters,
       inputPath : args["inputPath"],
-      outputFolder : args["outputPath"]
+      outputFolder : args["outputPath"],
+      optimize : args["optimizeImage"]
     }
   };
 
@@ -128,14 +140,21 @@ ipcMain.on('crypto' , (event , args) => {
 
     //Check if the requested opeartion is encrypt or decrypt in order in instantiate the correct worker module 
     if(args["operation"] == "encrypt"){
-      currentWorker = new Worker('./dist/Encrypt.js', data);
+      currentWorker = new Worker((isDev ? "./dist/" : "./resources/") + 'Encrypt.js', data);
     } else if (args["operation"] == "decrypt") {
-      currentWorker = new Worker('./dist/Decrypt.js', data);  
+      currentWorker = new Worker((isDev ? "./dist/" : "./resources/") + 'Decrypt.js', data);  
     }
 
     // Listeners for work progress / finish of the worker thread, each listener is tied to the corresponding callback defined above
     currentWorker.on('message' , data => {
-        onProgress(data.progress);
+        switch (data.type) {
+          case "progress":
+            onProgress(data.progress);            
+            break;
+          case "invalid-henon":
+            event.reply('invalid-henon');
+            break;
+        }
     });
 
     currentWorker.on('exit' , code =>{

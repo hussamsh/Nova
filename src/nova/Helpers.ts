@@ -2,8 +2,21 @@ import BitSet from "bitset";
 import Jimp from "jimp/*";
 var toFP = require( 'math-float64-to-binary-string' );
 var resemble = require('node-resemble-js');
+import { create, all } from 'mathjs';
+
+
+
 
 export class Helpers {
+
+        //mathjs configuration - use BigNumbers of precsion 64 bits
+    private static readonly config = {
+        number : 'BigNumber',
+        precision : 64
+    }
+
+    //Create mathjs object
+    static readonly math = create(all , Helpers.config);
 
     /** 
         Get the LSB - Least significant bit - of a given number. Since input will be converted to FP
@@ -19,6 +32,7 @@ export class Helpers {
 
         //Convert the given number to IEEE754 double precision floating point representation (64 bits) 
         let fp : string = toFP(input);
+        // return;
         
         //Get the LSB of the FP up to (x) places
         let lsb = fp.substr(fp.length - x);
