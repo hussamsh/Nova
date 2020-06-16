@@ -219,7 +219,7 @@ TODO
 
 
 
-[product-screenshot]: ./app/assets/images/screenshot.png
+[product-screenshot]: ./app/assets/images/nova-capture.gif
 [params-screenshot]: ./app/assets/images/choose-param.png
 [windows]: ./app/assets/images/microsoft.png
 [macos]: ./app/assets/images/macos.png
