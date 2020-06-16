@@ -7,10 +7,16 @@
 <p align="center">
 
 <p align="center">
-  <a aria-label="Vercel logo" href="http://hossamsherif.com">
+
+  <a aria-label="Hossam logo" href="http://hossamsherif.com">
     <img src="app/assets/images/madebyhos.png" width="150">
   </a>
+
+  ![Build](https://github.com/hussamsh/Nova/workflows/Build/badge.svg)
+  ![Build](https://github.com/hussamsh/Nova/workflows/Build/badge.svg)
+ 
  </p>
+
 
   <!-- <a href="https://github.com/hussamsh/Nova">
     <img src="./app/assets/images/nova.png" alt="Logo" width="160" >
