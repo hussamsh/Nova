@@ -1,5 +1,5 @@
 
-![](app/assets/images/banner.png)
+<img src="app/assets/images/banner.png" width="15000">
 
 <!-- PROJECT LOGO -->
 <br />
