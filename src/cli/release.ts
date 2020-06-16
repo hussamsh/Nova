@@ -79,6 +79,7 @@ async function windowsRelease(){
 
     output.on('close', function() {
         spinner.succeed("Windows build Files zipped successfully");
+        uploadFile(windowsPath , "windows");
     });
 
     archive.pipe(output);
@@ -87,7 +88,6 @@ async function windowsRelease(){
     archive.finalize();
 
 
-    uploadFile(windowsPath , "windows");
 
 }
 
@@ -121,7 +121,7 @@ async function linuxRelease() {
 
 
     const productionDir = __dirname + "/../production-builds";
-    const linuxPath = productionDir + "./nova-linux.zip";
+    const linuxPath = "./nova-linux.zip";
 
     // if (!fs.existsSync(productionDir)){
     //     fs.mkdirSync(productionDir);
@@ -141,6 +141,7 @@ async function linuxRelease() {
 
     output.on('close', function() {
         spinner.succeed("Linux build Files zipped successfully");
+        uploadFile(linuxPath , "linux");
     });
 
     archive.pipe(output);
@@ -149,7 +150,6 @@ async function linuxRelease() {
     archive.finalize();
 
 
-    uploadFile(linuxPath , "linux");
 
 }
 
@@ -157,7 +157,7 @@ async function linuxRelease() {
 function uploadFile(path : string , platform : string) {
     const file = fs.readFileSync(path);
 
-    let key = "release/builds/";
+    let key = "release-builds/";
     switch(platform){
         case "windows":
             key += "nova-windows.zip";
