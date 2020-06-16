@@ -5,17 +5,7 @@ var archiver = require('archiver');
 import ora from './ora'
 
 const AWS = require('aws-sdk');
-let s3;
-
-try {
-    var credentials = require('../../aws.json');
-    s3 = new AWS.S3({
-        accessKeyId: credentials.ID,
-        secretAccessKey: credentials.Secret
-    });    
-} catch (error) {
-    s3 = new AWS.S3();
-}
+let s3 = new AWS.S3();
 
 var input = require('minimist')(process.argv.slice(2));
 
@@ -57,44 +47,44 @@ async function windowsRelease(){
 
     spinner.succeed("Generated windows release builds");
 
+    let path = "./nova-windows.zip";
 
-    const productionDir = __dirname + "/../production-builds";
-    const windowsPath = productionDir + "/nova-windows.zip";
+    compress(path, () => {
 
-    if (!fs.existsSync(productionDir)){
-        fs.mkdirSync(productionDir);
-    }
+        uploadFile(path , "windows");
 
-    spinner = ora().start("Compressing windows build files");
-
-
-    var output = fs.createWriteStream(windowsPath);
-    var archive = archiver('zip', {
-        zlib: { level: 9 }
     });
-
-    archive.on('error', function(err) {
-        throw err;
-    });
-
-    output.on('close', function() {
-        spinner.succeed("Windows build Files zipped successfully");
-        uploadFile(windowsPath , "windows");
-    });
-
-    archive.pipe(output);
-
-    archive.directory('./release-builds' , false);
-    archive.finalize();
-
-
 
 }
 
-
-function macRelease() {
+async function macRelease() {
  
-    console.log("Release for mac");
+    let spinner = ora().start("Building windows release files");
+
+    await packager({
+        "quiet" : true,
+        "dir" : ".",
+        "platform" : "darwin",
+        "overwrite" : true,
+        "asar" : true,
+        "arch" : "x64",
+        "icon" : "./app/assets/images/nova.icns",
+        "out" : "release-builds",
+        "extraResource" : [
+            "./dist/Encrypt.js",
+            "./dist/Decrypt.js"
+        ]
+    });
+
+    spinner.succeed("Generated mac release builds");
+
+    let path = "./nova-mac.zip";
+
+    compress(path, () => {
+
+        uploadFile(path , "macOs");
+
+    });
 
 }
 
@@ -120,36 +110,13 @@ async function linuxRelease() {
     spinner.succeed("Generated linux release builds");
 
 
-    const productionDir = __dirname + "/../production-builds";
     const linuxPath = "./nova-linux.zip";
 
-    // if (!fs.existsSync(productionDir)){
-    //     fs.mkdirSync(productionDir);
-    // }
+    compress(linuxPath, () => {
 
-    spinner = ora().start("Compressing linux build files");
-
-
-    var output = fs.createWriteStream(linuxPath);
-    var archive = archiver('zip', {
-        zlib: { level: 9 }
-    });
-
-    archive.on('error', function(err) {
-        throw err;
-    });
-
-    output.on('close', function() {
-        spinner.succeed("Linux build Files zipped successfully");
         uploadFile(linuxPath , "linux");
+
     });
-
-    archive.pipe(output);
-
-    archive.directory('./release-builds' , false);
-    archive.finalize();
-
-
 
 }
 
@@ -190,5 +157,28 @@ function uploadFile(path : string , platform : string) {
 
 }
 
+function compress(path, callback){
+
+    let spinner = ora().start("Compressing build files");
+
+    var output = fs.createWriteStream(path);
+    var archive = archiver('zip', {
+        zlib: { level: 9 }
+    });
+
+    archive.on('error', function(err) {
+        throw err;
+    });
+
+    output.on('close', function() {
+        spinner.succeed("build Files zipped successfully");
+        callback();
+    });
+
+    archive.pipe(output);
+
+    archive.directory('./release-builds' , false);
+    archive.finalize();
+}
 
 

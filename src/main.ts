@@ -140,9 +140,9 @@ ipcMain.on('crypto' , (event , args) => {
 
     //Check if the requested opeartion is encrypt or decrypt in order in instantiate the correct worker module 
     if(args["operation"] == "encrypt"){
-      currentWorker = new Worker((isDev ? "./dist/" : "./resources/") + 'Encrypt.js', data);
+      currentWorker = new Worker(getScriptsDir() + 'Encrypt.js', data);
     } else if (args["operation"] == "decrypt") {
-      currentWorker = new Worker((isDev ? "./dist/" : "./resources/") + 'Decrypt.js', data);  
+      currentWorker = new Worker(getScriptsDir() + 'Decrypt.js', data);  
     }
 
     // Listeners for work progress / finish of the worker thread, each listener is tied to the corresponding callback defined above
@@ -176,3 +176,17 @@ ipcMain.on('cancel' , (event , args) => {
     }
 
 });
+
+
+// Return scripts directory for each target platform
+function getScriptsDir(){
+
+  if( isDev ) {
+    return "./dist/";
+  } else if(process.platform === "darwin"){
+    return "./Contents/Resources/";
+  }else{
+    return "./resources/";
+  }
+
+}
