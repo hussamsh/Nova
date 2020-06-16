@@ -1,15 +1,22 @@
-![Tests](https://github.com/hussamsh/Nova/workflows/Tests/badge.svg)
-    
+
+![](app/assets/images/banner.png)
+
 <!-- PROJECT LOGO -->
 <br />
 
 <p align="center">
 
-  <a href="https://github.com/hussamsh/Nova">
+<p align="center">
+  <a aria-label="Vercel logo" href="http://hossamsherif.com">
+    <img src="app/assets/images/madebyhos.png" width="150">
+  </a>
+ </p>
+
+  <!-- <a href="https://github.com/hussamsh/Nova">
     <img src="./app/assets/images/nova.png" alt="Logo" width="160" >
   </a>
 
-<b><h1 align="center">NOVA</h1></b>
+<b><h1 align="center">NOVA</h1></b> -->
 
   <p align="center">
     A cryptography application for images based on chaotic maps
@@ -36,6 +43,7 @@
   - [Remarks](#remarks)
 - [Security](#security)
 - [Examples](#examples)
+- [Valid inputs](#valid-inputs)
 - [Roadmap](#roadmap)
 - [Development](#development)
   - [Prerequisites](#prerequisites)
@@ -80,9 +88,9 @@ I have already published part of my research if you would like to read more
 ### Download
 Download the lateset stable distribution for your OS.
 
-[![windows 10][windows]](https://example.com) 
-[![macos][macos]](https://example.com) 
-[![linux][linux]](https://example.com) 
+[![windows 10][windows]](https://s3.eu-central-1.amazonaws.com/com.hossamsherif.nova/release-builds/nova-windows.zip) 
+[![macos][macos]](https://s3.eu-central-1.amazonaws.com/com.hossamsherif.nova/release-builds/nova-macOs.zip) 
+[![linux][linux]](https://s3.eu-central-1.amazonaws.com/com.hossamsherif.nova/release-builds/nova-linux.zip) 
 
 ### Usage
 
@@ -101,19 +109,17 @@ Download the lateset stable distribution for your OS.
 
 ### Remarks
 
-* When choosing an image it's a good idea to compress / resize the image as much as possible. Especially resizing the image will yield a much better performance as the number of pixel is inversly propotional with the time needed for encryption.
+* It is highly recommended to always turn on the resize option mainly because encryption performance is inversly propotional with the number of pixels an image has. The only time you need to disable resizing is when pixel information is critical but that will result in a much reduced perfomance.
   
-* Make sure that the values chosen as input makes since for the chosen map, not any two values will suffice. Each chaotic map has it's own ranges that it can operate in. Refer to [this page]() to learn more.
+* Values choosen for each map must be valid see this [section](#valid-inputs) to learn more.
 
-* Be mindful of what parameters you use for encrypting an image and write them down or memorize them as any slight change will not yield a correct decryption of an image you need to enter the <b>exact</b> numbers you used for encryption, i.e ![3.725 \neq 3.724](https://render.githubusercontent.com/render/math?math=3.725%20%5Cneq%203.724).
-* For the Henon map there is no way - as far as I have researched - to check wether the initial parameters will diverge to the attractor or infinity, therfore the encryption is stopped anytime the sequence diverges to infinity. 
+* Make sure when decrypting to enter the exact same values used for encryption, any simple variation or mismatch will result in decryption not being successful.
+
 ## Security
 
 One aspect of measuring the security of any encrypton is called `key space analysis` which is simply the number of keys - permutations - that an attacker has to through in order to find the parameters your are using.
 
-A map like the double humped map has three input parameters at 64 bits length yields it's size to be 192 bits long which constitues a key space of ![2^{192} = 10^{57}](https://render.githubusercontent.com/render/math?math=2%5E%7B192%7D%20%3D%2010%5E%7B57%7D) keys in total.
-
-Lets put this into prespective. Our entire solar systems has about ![10^{56}](https://render.githubusercontent.com/render/math?math=10%5E%7B56%7D) atoms which means that an attacker that can harness the power of our solar system and make every single atom calculate one key of the map, will be an order of magnitude short of achieving his goal. 
+A map like the double humped map has three input parameters at 64 bits length yields it's size to be 192 bits long which constitues a key space of ![2^{192} = 10^{57}](https://render.githubusercontent.com/render/math?math=2%5E%7B192%7D%20%3D%2010%5E%7B57%7D) keys in total which is large enough to resist any kind of brute force attackes.
 
 Of course there are other aspects of measuring security for an encryption system such as entropy, key sensitivity analysis, differential attacks ... etc. For a thourgh analysis of our Double humped map example, read this [journal](https://www.sciencedirect.com/science/article/pii/S2090123218300195)
 
@@ -126,7 +132,26 @@ Of course there are other aspects of measuring security for an encryption system
 |<img src="./app/assets/images/ruby.jpg" width="300px" >| <img src="./app/assets/images/ruby_enc.jpg" width="300px"> |
 
 
+## Valid inputs
 
+Each chaotic map has certain valid ranges that it can operate within. For successful encryption, you need to choose values such that the ouptut of the map will be chaotic.
+
+* Logistic map
+  
+  ![\lambda \in \[0,4\], \lambda_{chaos} > 3.6](https://render.githubusercontent.com/render/math?math=%5Clambda%20%5Cin%20%5B0%2C4%5D%2C%20%5Clambda_%7Bchaos%7D%20%3E%203.6)
+
+  ![x \in \[0,1\]](https://render.githubusercontent.com/render/math?math=x%20%5Cin%20%5B0%2C1%5D)
+
+* Double humped map
+  
+  ![\lambda \in \[0, \frac{8}{c^3}\]](https://render.githubusercontent.com/render/math?math=%5Clambda%20%5Cin%20%5B0%2C%20%5Cfrac%7B8%7D%7Bc%5E3%7D%5D)
+  
+  ![x \in \[0, 2c\]](https://render.githubusercontent.com/render/math?math=x%20%5Cin%20%5B0%2C%202c%5D)
+
+  exact chaotic regions will depend on ![c](https://render.githubusercontent.com/render/math?math=c), as an example for  ![c = 1, \lambda_{chaos} > 3.2](https://render.githubusercontent.com/render/math?math=c%20%3D%201%2C%20%5Clambda_%7Bchaos%7D%20%3E%203.2).
+
+* For the Henon map there is no way - as far as I have researched - to check wether the initial parameters will diverge to the attractor or infinity, therfore the encryption is stopped anytime the sequence diverges to infinity. 
+  
 ## Roadmap
 
 * Adding more maps to choose from.
