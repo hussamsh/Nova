@@ -206,16 +206,18 @@ If you would like to develop a new feature or see how the code is running under 
 
 ## C++ implementation
 
-I have implemented this project in c++ which run from CLI and perofrmes at 3 - 5 times the speed of this implementation in javascript. Check it out in this [github repo](). 
+I have implemented this project in c++ which runs from CLI and perofrmes at 3 - 5 times the speed of this implementation in javascript. Check it out in this [github repo](https://github.com/hussamsh/nova-cpp). 
 
 
 ## License
 
-TODO
+GNU GENERAL PUBLIC LICENSE Version 2.
+
+ [Read more](https://github.com/hussamsh/Nova/blob/hossam-dev/LICENSE)
 
 ## Contact
 
-TODO
+hossamsherifmostafa@gmail.com
 
 
 
