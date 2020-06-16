@@ -59,7 +59,7 @@ async function windowsRelease(){
 
 async function macRelease() {
  
-    let spinner = ora().start("Building windows release files");
+    let spinner = ora().start("Building mac release files");
 
     await packager({
         "quiet" : true,
@@ -171,7 +171,7 @@ function compress(path, callback){
     });
 
     output.on('close', function() {
-        spinner.succeed("build Files zipped successfully");
+        spinner.succeed("Build Files zipped successfully");
         callback();
     });
 
