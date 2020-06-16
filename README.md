@@ -12,11 +12,14 @@
     <img src="app/assets/images/madebyhos.png" width="150">
   </a>
 
-  ![Build](https://github.com/hussamsh/Nova/workflows/Build/badge.svg)
-  ![Build](https://github.com/hussamsh/Nova/workflows/Build/badge.svg)
- 
  </p>
 
+ <div align="center">
+
+  ![Build](https://github.com/hussamsh/Nova/workflows/Build/badge.svg)
+  ![Build](https://github.com/hussamsh/Nova/workflows/Build/badge.svg)
+
+  </div>
 
   <!-- <a href="https://github.com/hussamsh/Nova">
     <img src="./app/assets/images/nova.png" alt="Logo" width="160" >
