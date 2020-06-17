@@ -3,6 +3,8 @@
 const path = require("path");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const nodeExternals = require('webpack-node-externals');
+const EventHooksPlugin = require('event-hooks-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 
 const commonConfig = {
@@ -18,10 +20,7 @@ const commonConfig = {
   
     // Where to compile the bundle
     // By default the output directory is `dist`
-    output: {
-      path: path.resolve(__dirname, 'dist'),
-      filename: '[name].js'
-    },
+
   
     // Supported file loaders
     module: {
@@ -63,7 +62,6 @@ const commonConfig = {
         }
       ]
     },
-  
     // File extensions to support resolving
     resolve: {
       extensions: [".ts", ".tsx", ".js" , ".css" , ".png"], 
@@ -78,7 +76,11 @@ module.exports = [
     Object.assign(
         {
           target: 'electron-main',
-          entry: { main: './src/main.ts' }
+          entry: { main: './src/main.ts' },
+          output: {
+            path: path.resolve(__dirname, '.'),
+            filename: '[name].js'
+          },
         },
         commonConfig),
       Object.assign(
@@ -87,13 +89,21 @@ module.exports = [
           entry: { renderer: './src/renderer.tsx' },
           plugins: [new HtmlWebpackPlugin({
               template : "./app/index.html"
-          })]
+          })],
+          output: {
+            path: path.resolve(__dirname, 'dist'),
+            filename: '[name].js'
+          },
         },
         commonConfig),
         Object.assign(
             {
               target : 'electron-preload',
               entry: { preload: './src/preload.ts' },
+              output: {
+                path: path.resolve(__dirname, 'dist'),
+                filename: '[name].js'
+              },
             },
             commonConfig),
         Object.assign(
@@ -104,6 +114,10 @@ module.exports = [
               Encrypt : './src/nova/Encrypt.ts' ,
               tests : './src/test/tests.ts',
               release : './src/cli/release.ts',
+            },
+            output: {
+              path: path.resolve(__dirname, 'dist'),
+              filename: '[name].js'
             },
           },
           commonConfig),

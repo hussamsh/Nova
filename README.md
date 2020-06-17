@@ -164,7 +164,8 @@ Each chaotic map has certain valid ranges that it can operate within. For succes
 ## Roadmap
 
 * Adding more maps to choose from.
-* Histograms and comaprisons right inside the app
+* Histograms and comaprisons right inside the app.
+* Encryption of formats and files other than images.
 
 
 ## Development
@@ -206,7 +207,7 @@ If you would like to develop a new feature or see how the code is running under 
 
 ## C++ implementation
 
-I have implemented this project in c++ which runs from CLI and perofrmes at 3 - 5 times the speed of this implementation in javascript. Check it out in this [github repo](https://github.com/hussamsh/nova-cpp). 
+I have implemented this project in c++ which runs from CLI and perofrms at 3 - 5 times the speed of this implementation in javascript. Check it out in this [github repo](https://github.com/hussamsh/nova-cpp). 
 
 
 ## License

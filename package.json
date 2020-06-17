@@ -1,7 +1,7 @@
 {
   "name": "nova",
   "version": "0.0.1",
-  "main": "dist/main.js",
+  "main": "main.js",
   "description": "Desktop application that implements different kinds of cryptographic algorithms",
   "scripts": {
     "build": "webpack --config webpack.config.js",
@@ -66,6 +66,7 @@
     "chai": "^4.2.0",
     "cli-spinners": "^2.3.0",
     "electron-is-dev": "^1.2.0",
+    "event-hooks-webpack-plugin": "^2.1.6",
     "file-uri-to-path": "^2.0.0",
     "jimp": "^0.12.1",
     "jquery": "^3.5.0",

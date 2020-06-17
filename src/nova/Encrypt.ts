@@ -1,6 +1,6 @@
 import { workerData,parentPort } from 'worker_threads';
 import { Helpers } from "./Helpers";
-import { bignumber, BigNumber } from 'mathjs';
+import { bignumber } from 'mathjs';
 import BitSet from 'bitset';
 import Jimp from "jimp";
 import EncryptionTypes from './EncryptionTypes';
