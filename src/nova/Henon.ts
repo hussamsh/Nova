@@ -5,7 +5,7 @@ import { Helpers } from "./Helpers";
 export class Henon implements EncryptionAlgorithm {
     
     getName(): String {
-        return "Hénon Map Encryption";
+        return "Henon Map Encryption";
     }
     
 

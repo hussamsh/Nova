@@ -86,9 +86,15 @@ module.exports = [
       Object.assign(
         {
           target : 'electron-renderer',
-          entry: { renderer: './src/renderer.tsx' },
+          entry: { 
+            renderer: './src/renderer.tsx',
+            crypto : './src/nova/crypto.ts',
+          },
           plugins: [new HtmlWebpackPlugin({
-              template : "./app/index.html"
+              template : "./app/index.html",
+          }),
+          new HtmlWebpackPlugin({
+            template : "./app/empty.html",
           })],
           output: {
             path: path.resolve(__dirname, 'dist'),

@@ -257,7 +257,6 @@ ReactDOM.render(
     }
 
     ipcRenderer.on('finished' , (event , args) => {
-        console.log("Finished");
         onCryptoOperationEnded();
     });
 

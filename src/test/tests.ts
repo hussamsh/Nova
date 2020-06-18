@@ -12,6 +12,22 @@ let inputImagePath = imageTestFolder + "/test_image.png";
 let encryptedImagePath = imageTestFolder +"/test_image_encrypted.png";
 let decryptedImagePath = imageTestFolder +"/test_image_decrypted.png";
 
+
+const Application = require('spectron').Application
+const assert = require('assert')
+const electronPath = require('electron') // Require Electron from the binaries included in node_modules.
+const path = require('path')
+
+describe("Application launch" , () => {
+  this.timeout(10000);
+
+  beforeEach(() => {
+    this.app = new Application({
+      path : electronPath,
+      args : [path.join(__dirname, '../..')]
+    })
+  })
+})
 describe("Helpers" , () => {
 
   describe("Decimal to binary conversion" , () => {

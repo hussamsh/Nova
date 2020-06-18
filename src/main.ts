@@ -1,12 +1,8 @@
 import { app, BrowserWindow , globalShortcut, dialog, ipcMain} from "electron";
 import * as path from "path";
-const { Worker, isMainThread } = require('worker_threads');
 const isDev = require('electron-is-dev');
 
 let mainWindow: Electron.BrowserWindow;
-let currentWorker;
-
-
 let threadWindow : Electron.BrowserWindow;
 
 function createWindow() {
@@ -30,11 +26,23 @@ function createWindow() {
   // Open the DevTools.
   // mainWindow.webContents.openDevTools();
 
+  
+  mainWindow.on('close' , () =>{
+    
+    if(threadWindow){
+      ipcMain.removeAllListeners();
+      threadWindow.removeAllListeners();
+      threadWindow.destroy();
+      threadWindow = null;
+    }
+
+  })
   // Emitted when the window is closed.
   mainWindow.on("closed", () => {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
+    
     mainWindow = null;
   });
 
@@ -55,14 +63,6 @@ function createWindow() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", createWindow);
-
-app.on('before-quit' , (event) => {
-  if(currentWorker){
-    currentWorker.removeAllListeners('message');
-    currentWorker.removeAllListeners('exit');
-    currentWorker.terminate();
-  }
-});
 
 // Quit when all windows are closed.
 app.on("window-all-closed", () => {
@@ -104,91 +104,124 @@ ipcMain.on('select-dirs', async (event, arg) => {
   Listener for cryptographic operations - encrypt / decrypt .
 */
 ipcMain.on('crypto' , (event , args) => {
-
-  // threadWindow = new BrowserWindow({
-  //   show: false,
-  //   parent: mainWindow,
-  //   webPreferences: {
-  //       preload: path.join(__dirname, "./dist/preload.js"),
-  //       nodeIntegration: true,
-  //       nodeIntegrationInWorker: true,
-  //       nodeIntegrationInSubFrames: true,
-  //       devTools: false,
-  //       backgroundThrottling: false
-  //   }
-  // });
-
-
-
-
-
-
-
-
-
-
-
-  /* 
-    Set 2 callbacks for cryptographic functions 
-    1) First - is the onProgress which updates the progress of the current operation
-    2) Second - is the onFinish which triggers that the operation has finsihed and the worker thread is idle and available
-  */
-  let onProgress = (progress : number) => {
-    event.reply('progress' , progress);
-  };
-
-  let onFinish = () => {
-    event.reply('finished');
-    currentWorker.removeAllListeners('message');
-    currentWorker.removeAllListeners('exit');
-    currentWorker = null;
-  };
-
-   //Parameters that is unique to the current cryptographic algorithm
-   //Restructure the input 
+  
+    //Parameters that is unique to the current cryptographic algorithm
+    //Restructure the input 
    let parameters = new Object();
    args["inputParams"].forEach((element) => {
       parameters[element.name] = element.value;
    });
 
-  //Data needed for the worker thread module
   let data = {
-    workerData : {
+      operation : args["operation"],
       algorithm : args["selectedAlgorithm"],
       parameters : parameters,
-      inputPath : args["inputPath"],
+      imagePath : args["inputPath"],
       outputFolder : args["outputPath"],
       optimize : args["optimizeImage"]
-    }
   };
-
-  //Check if current process is in the main thread - main.js is always on main thred but it's a good practice to check nevertheless 
-  if(isMainThread){
-
-    //Check if the requested opeartion is encrypt or decrypt in order in instantiate the correct worker module 
-    if(args["operation"] == "encrypt"){
-      currentWorker = new Worker(getScriptsDir() + 'Encrypt.js', data);
-    } else if (args["operation"] == "decrypt") {
-      currentWorker = new Worker(getScriptsDir() + 'Decrypt.js', data);  
+  
+  threadWindow = new BrowserWindow({
+    show: false,
+    parent: mainWindow,
+    webPreferences: {
+        preload: path.join(__dirname, "./dist/preload.js"),
+        nodeIntegration: true,
+        nodeIntegrationInWorker: true,
+        nodeIntegrationInSubFrames: true,
+        devTools: true,
+        backgroundThrottling: false
     }
+  });
 
-    // Listeners for work progress / finish of the worker thread, each listener is tied to the corresponding callback defined above
-    currentWorker.on('message' , data => {
-        switch (data.type) {
-          case "progress":
-            onProgress(data.progress);            
-            break;
-          case "invalid-henon":
-            event.reply('invalid-henon');
-            break;
-        }
-    });
+  threadWindow.loadFile(path.join(__dirname, "./app/empty.html"));
 
-    currentWorker.on('exit' , code =>{
-        onFinish();
-    });
+  ipcMain.on('progress' , (subEvent , message) => {
+    event.reply('progress' , message);
+  });
 
-  }
+  ipcMain.on('image-written', () =>{
+    threadWindow.destroy();
+  });
+
+  ipcMain.on('invalid-henon' , () => {
+    threadWindow.destroy();
+    event.reply('invalid-henon');
+  });
+
+  threadWindow.webContents.once('did-finish-load' , () => {
+
+    threadWindow.webContents.send('crypto' , data);
+
+  });
+
+  threadWindow.on('closed', () => {
+    event.reply("finished");
+    threadWindow = null;
+  });
+
+
+  // /* 
+  //   Set 2 callbacks for cryptographic functions 
+  //   1) First - is the onProgress which updates the progress of the current operation
+  //   2) Second - is the onFinish which triggers that the operation has finsihed and the worker thread is idle and available
+  // */
+  // let onProgress = (progress : number) => {
+  //   event.reply('progress' , progress);
+  // };
+
+  // let onFinish = () => {
+  //   event.reply('finished');
+  //   currentWorker.removeAllListeners('message');
+  //   currentWorker.removeAllListeners('exit');
+  //   currentWorker = null;
+  // };
+
+  //  //Parameters that is unique to the current cryptographic algorithm
+  //  //Restructure the input 
+  //  let parameters = new Object();
+  //  args["inputParams"].forEach((element) => {
+  //     parameters[element.name] = element.value;
+  //  });
+
+  // //Data needed for the worker thread module
+  // let data = {
+  //   workerData : {
+  //     algorithm : args["selectedAlgorithm"],
+  //     parameters : parameters,
+  //     inputPath : args["inputPath"],
+  //     outputFolder : args["outputPath"],
+  //     optimize : args["optimizeImage"]
+  //   }
+  // };
+
+  // //Check if current process is in the main thread - main.js is always on main thred but it's a good practice to check nevertheless 
+  // if(isMainThread){
+
+  //   //Check if the requested opeartion is encrypt or decrypt in order in instantiate the correct worker module 
+  //   if(args["operation"] == "encrypt"){
+  //     currentWorker = new Worker(getScriptsDir() + 'Encrypt.js', data);
+  //   } else if (args["operation"] == "decrypt") {
+  //     currentWorker = new Worker(getScriptsDir() + 'Decrypt.js', data);  
+  //   }
+
+  //   // Listeners for work progress / finish of the worker thread, each listener is tied to the corresponding callback defined above
+  //   currentWorker.on('message' , data => {
+  //       switch (data.type) {
+  //         case "progress":
+  //           onProgress(data.progress);            
+  //           break;
+  //         case "invalid-henon":
+  //           event.reply('invalid-henon');
+  //           break;
+  //       }
+  //   });
+
+  //   currentWorker.on('exit' , code =>{
+  //       onFinish();
+  //   });
+
+  // }
 
 });
 
@@ -196,11 +229,10 @@ ipcMain.on('crypto' , (event , args) => {
 // Listener for the canceling the current operation 
 ipcMain.on('cancel' , (event , args) => {
   
-    //Simply terminates the current worker thread 
-
-    if(currentWorker){
-      currentWorker.terminate();
-    }
+  //Simply terminates the current worker thread 
+  if(threadWindow){
+    threadWindow.destroy();
+  }
 
 });
 
