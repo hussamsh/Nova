@@ -6,12 +6,16 @@ const isDev = require('electron-is-dev');
 let mainWindow: Electron.BrowserWindow;
 let currentWorker;
 
+
+let threadWindow : Electron.BrowserWindow;
+
 function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     webPreferences: {
       preload: path.join(__dirname, "./dist/preload.js"),
       nodeIntegration: true,
+      nodeIntegrationInWorker: true
     },
     width: 1200,
     height: 700,
@@ -100,6 +104,29 @@ ipcMain.on('select-dirs', async (event, arg) => {
   Listener for cryptographic operations - encrypt / decrypt .
 */
 ipcMain.on('crypto' , (event , args) => {
+
+  // threadWindow = new BrowserWindow({
+  //   show: false,
+  //   parent: mainWindow,
+  //   webPreferences: {
+  //       preload: path.join(__dirname, "./dist/preload.js"),
+  //       nodeIntegration: true,
+  //       nodeIntegrationInWorker: true,
+  //       nodeIntegrationInSubFrames: true,
+  //       devTools: false,
+  //       backgroundThrottling: false
+  //   }
+  // });
+
+
+
+
+
+
+
+
+
+
 
   /* 
     Set 2 callbacks for cryptographic functions 
