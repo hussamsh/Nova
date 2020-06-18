@@ -4,7 +4,6 @@ const path = require("path");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const nodeExternals = require('webpack-node-externals');
 const EventHooksPlugin = require('event-hooks-webpack-plugin');
-const CopyPlugin = require('copy-webpack-plugin');
 
 
 const commonConfig = {
