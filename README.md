@@ -17,15 +17,9 @@
  <div align="center">
 
   ![Build](https://github.com/hussamsh/Nova/workflows/Build/badge.svg)
-  ![Build](https://github.com/hussamsh/Nova/workflows/Build/badge.svg)
+  ![CI](https://github.com/hussamsh/Nova/workflows/CI/badge.svg)
 
   </div>
-
-  <!-- <a href="https://github.com/hussamsh/Nova">
-    <img src="./app/assets/images/nova.png" alt="Logo" width="160" >
-  </a>
-
-<b><h1 align="center">NOVA</h1></b> -->
 
   <p align="center">
     A cryptography application for images based on chaotic maps
@@ -64,7 +58,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-Nova's idea is to become a software equivilant for a part of my research on hardware implementations of chaotic ciphers, it utilizes `chaotic maps` and pixel by pixel encrpytion algorithms to cipher images.
+Nova's idea is to become a software equivalent for a part of my research on hardware implementations of chaotic ciphers, it utilizes `chaotic maps` and pixel by pixel encryption algorithms to cipher images.
 
 I have already published part of my research if you would like to read more
 
@@ -77,12 +71,9 @@ I have already published part of my research if you would like to read more
 * **Logistic map** 
   Based on Robert May's [work](https://www.researchgate.net/publication/237005499_Simple_Mathematical_Models_With_Very_Complicated_Dynamics) back in 1976, the logistic map is the most iconic and heavily researched chaotic maps in his history.
 * **Double humped map**
-  Popularized by [Coiteux](https://core.ac.uk/download/pdf/61733598.pdf) in 2014, the double humped map shows a double hump in it's first iteration - hence the name - and exhibits some unique behavior that mkes it highly suitable for cryptogragic operations.
+  Popularized by [Coiteux](https://core.ac.uk/download/pdf/61733598.pdf) in 2014, the double humped map shows a double hump in it's first iteration - hence the name - and exhibits some unique behavior that mkes it highly suitable for cryptographic operations.
 * **Hénon map**
     Another widely recognized map, introduced by Micheal Hénon as a simplified model of the Poincaré section of the Lorenz model. 
-<!-- **To avoid retyping too much info. Do a search and replace with your text editor for the following:** !-->
-<!-- `github_username`, `repo`, `twitter_handle`, `email`  -->
-
 
 
 ### Built With
@@ -95,7 +86,7 @@ I have already published part of my research if you would like to read more
 ## Getting Started
 
 ### Download
-Download the lateset stable distribution for your OS.
+Download the latset stable distribution for your OS.
 
 [![windows 10][windows]](https://s3.eu-central-1.amazonaws.com/com.hossamsherif.nova/release-builds/nova-windows.zip) 
 [![macos][macos]](https://s3.eu-central-1.amazonaws.com/com.hossamsherif.nova/release-builds/nova-macOs.zip) 
@@ -103,15 +94,12 @@ Download the lateset stable distribution for your OS.
 
 ### Usage
 
+See the attached gif above.
+
 **Step 1 )**  Choose the desired image for encryption / decryption by drag-drop or clicking browse in the designated area. 
 
 
 **Step 2 )**  Enter the desired params for your choosen map as well as an output directory for the processed image.
-
-<!-- <img src="./app/assets/images/choose-param.png" alt="Logo" height="400px" > -->
-
-<!-- [![Product Name Screen Shot][params-screenshot]]() -->
-
 
 **Step 3 )**  Press Encrypt / Decrypt and wait for your image to be processed. Once finished you will find the processed image in the output directory with a suffix of either _encrypted / _decrypted.
 
@@ -128,9 +116,9 @@ Download the lateset stable distribution for your OS.
 
 One aspect of measuring the security of any encrypton is called `key space analysis` which is simply the number of keys - permutations - that an attacker has to through in order to find the parameters your are using.
 
-A map like the double humped map has three input parameters at 64 bits length yields it's size to be 192 bits long which constitues a key space of ![2^{192} = 10^{57}](https://render.githubusercontent.com/render/math?math=2%5E%7B192%7D%20%3D%2010%5E%7B57%7D) keys in total which is large enough to resist any kind of brute force attackes.
+A map like the double humped map has three input parameters at 64 bits length yields it's size to be 192 bits long which constitues a key space of ![2^{192} = 10^{57}](https://render.githubusercontent.com/render/math?math=2%5E%7B192%7D%20%3D%2010%5E%7B57%7D) keys in total which is large enough to resist any kind of brute force attackes. (infact ![10^{57}](https://render.githubusercontent.com/render/math?math=10^57) is larger than the total number of atoms in our galaxy!) 
 
-Of course there are other aspects of measuring security for an encryption system such as entropy, key sensitivity analysis, differential attacks ... etc. For a thourgh analysis of our Double humped map example, read this [journal](https://www.sciencedirect.com/science/article/pii/S2090123218300195)
+Of course there are other aspects of measuring security for an encryption system such as entropy, key sensitivity analysis, differential attacks ... etc. For a thorough analysis of our Double humped map example, read this [journal](https://www.sciencedirect.com/science/article/pii/S2090123218300195)
 
 
 ## Examples
