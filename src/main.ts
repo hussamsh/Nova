@@ -1,6 +1,6 @@
-import { app, BrowserWindow , globalShortcut, dialog, ipcMain} from "electron";
+import { app, BrowserWindow , globalShortcut, dialog, ipcMain } from "electron";
 import * as path from "path";
-const isDev = require('electron-is-dev');
+import { Events } from "./helpers/Enums";
 
 let mainWindow: Electron.BrowserWindow;
 let threadWindow : Electron.BrowserWindow;
@@ -104,8 +104,8 @@ ipcMain.on('select-dirs', async (event, arg) => {
   Listener for cryptographic operations - encrypt / decrypt .
 */
 ipcMain.on('crypto' , (event , args) => {
-  
-    //Parameters that is unique to the current cryptographic algorithm
+
+    //Parameters that is unique to the current c`ryptographic algorithm
     //Restructure the input 
    let parameters = new Object();
    args["inputParams"].forEach((element) => {
@@ -136,17 +136,17 @@ ipcMain.on('crypto' , (event , args) => {
 
   threadWindow.loadFile(path.join(__dirname, "./app/empty.html"));
 
-  ipcMain.on('progress' , (subEvent , message) => {
-    event.reply('progress' , message);
+  ipcMain.on(Events.PROGRESS , (subEvent , message) => {
+    event.reply(Events.PROGRESS , message);
   });
 
-  ipcMain.on('image-written', () =>{
+  ipcMain.on(Events.FINISHED, () =>{
     threadWindow.destroy();
   });
 
-  ipcMain.on('invalid-henon' , () => {
+  ipcMain.on(Events.FAILED , () => {
     threadWindow.destroy();
-    event.reply('invalid-henon');
+    event.reply(Events.FAILED);
   });
 
   threadWindow.webContents.once('did-finish-load' , () => {
@@ -156,78 +156,19 @@ ipcMain.on('crypto' , (event , args) => {
   });
 
   threadWindow.on('closed', () => {
-    event.reply("finished");
+    event.reply(Events.FINISHED);
+
+    ipcMain.removeAllListeners(Events.FAILED);
+    ipcMain.removeAllListeners(Events.FINISHED);
+    ipcMain.removeAllListeners(Events.PROGRESS);
     threadWindow = null;
   });
-
-
-  // /* 
-  //   Set 2 callbacks for cryptographic functions 
-  //   1) First - is the onProgress which updates the progress of the current operation
-  //   2) Second - is the onFinish which triggers that the operation has finsihed and the worker thread is idle and available
-  // */
-  // let onProgress = (progress : number) => {
-  //   event.reply('progress' , progress);
-  // };
-
-  // let onFinish = () => {
-  //   event.reply('finished');
-  //   currentWorker.removeAllListeners('message');
-  //   currentWorker.removeAllListeners('exit');
-  //   currentWorker = null;
-  // };
-
-  //  //Parameters that is unique to the current cryptographic algorithm
-  //  //Restructure the input 
-  //  let parameters = new Object();
-  //  args["inputParams"].forEach((element) => {
-  //     parameters[element.name] = element.value;
-  //  });
-
-  // //Data needed for the worker thread module
-  // let data = {
-  //   workerData : {
-  //     algorithm : args["selectedAlgorithm"],
-  //     parameters : parameters,
-  //     inputPath : args["inputPath"],
-  //     outputFolder : args["outputPath"],
-  //     optimize : args["optimizeImage"]
-  //   }
-  // };
-
-  // //Check if current process is in the main thread - main.js is always on main thred but it's a good practice to check nevertheless 
-  // if(isMainThread){
-
-  //   //Check if the requested opeartion is encrypt or decrypt in order in instantiate the correct worker module 
-  //   if(args["operation"] == "encrypt"){
-  //     currentWorker = new Worker(getScriptsDir() + 'Encrypt.js', data);
-  //   } else if (args["operation"] == "decrypt") {
-  //     currentWorker = new Worker(getScriptsDir() + 'Decrypt.js', data);  
-  //   }
-
-  //   // Listeners for work progress / finish of the worker thread, each listener is tied to the corresponding callback defined above
-  //   currentWorker.on('message' , data => {
-  //       switch (data.type) {
-  //         case "progress":
-  //           onProgress(data.progress);            
-  //           break;
-  //         case "invalid-henon":
-  //           event.reply('invalid-henon');
-  //           break;
-  //       }
-  //   });
-
-  //   currentWorker.on('exit' , code =>{
-  //       onFinish();
-  //   });
-
-  // }
 
 });
 
 
 // Listener for the canceling the current operation 
-ipcMain.on('cancel' , (event , args) => {
+ipcMain.on(Events.CANCELED , (event , args) => {
   
   //Simply terminates the current worker thread 
   if(threadWindow){
@@ -235,17 +176,3 @@ ipcMain.on('cancel' , (event , args) => {
   }
 
 });
-
-
-// Return scripts directory for each target platform
-function getScriptsDir(){
-
-  if( isDev ) {
-    return "./dist/";
-  } else if(process.platform === "darwin"){
-    return "./Contents/Resources/";
-  }else{
-    return "./resources/";
-  }
-
-}

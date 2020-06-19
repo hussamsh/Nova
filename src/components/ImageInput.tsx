@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import Palette from '../palette';
+import Palette from '../helpers/palette';
 const { dialog  } = require('electron').remote
 import Tippy, { tippy } from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css'; 

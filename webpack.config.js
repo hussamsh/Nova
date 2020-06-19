@@ -4,7 +4,7 @@ const path = require("path");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const nodeExternals = require('webpack-node-externals');
 const EventHooksPlugin = require('event-hooks-webpack-plugin');
-
+const shebangLoader = require('shebang-loader');
 
 const commonConfig = {
     node: {
@@ -24,6 +24,11 @@ const commonConfig = {
     // Supported file loaders
     module: {
       rules: [
+        {
+          test: /\.(js|jsx)$/,
+          exclude: /node_modules/,
+          loader: ["shebang-loader"]
+        },
         {
           test: /\.(ts|tsx)$/,
           exclude: /node_modules/,
@@ -87,7 +92,7 @@ module.exports = [
           target : 'electron-renderer',
           entry: { 
             renderer: './src/renderer.tsx',
-            crypto : './src/nova/crypto.ts',
+            thread : './src/threads/CryptoThread.ts',
           },
           plugins: [new HtmlWebpackPlugin({
               template : "./app/index.html",
@@ -115,9 +120,6 @@ module.exports = [
           {
             target : 'node',
             entry: { 
-              Decrypt : './src/nova/Decrypt.ts',
-              Encrypt : './src/nova/Encrypt.ts' ,
-              tests : './src/test/tests.ts',
               release : './src/cli/release.ts',
             },
             output: {
@@ -126,5 +128,20 @@ module.exports = [
             },
           },
           commonConfig),
+          Object.assign(
+            {
+              target : 'node',
+              entry: { 
+                dh : './src/tests/DH.ts',
+                logitsic : './src/tests/Logistic.ts',
+                henon : './src/tests/Henon.ts',
+                general : './src/tests/General.ts',
+              },
+              output: {
+                path: path.resolve(__dirname, 'dist/tests'),
+                filename: '[name].js'
+              },
+            },
+            commonConfig),
 
 ]

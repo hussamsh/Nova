@@ -3,7 +3,7 @@ import DropDown from './DropDown';
 import styled from 'styled-components';
 import ParametersInputSection from './ParametersInputSection';
 import OutputPathSelectSection from './OutputPathSelectSection';
-import { EncryptionAlgorithm } from '../interfaces/EncryptionAlgorithm';
+import { Map } from '../interfaces/Map';
 import OptimizeImageSection from './OptimizeImageSection';
 
 
@@ -49,7 +49,7 @@ const Hr =  styled.hr`
 `
 
  
-class RightPanel extends React.Component<{availableAlgorithms : Array<EncryptionAlgorithm>} , {equation : String ,params : Array<{symbol : String , name: String}>}> {
+class RightPanel extends React.Component<{availableAlgorithms : Array<Map>} , {equation : String ,params : Array<{symbol : String , name: String}>}> {
     
     names = this.props.availableAlgorithms.map((element) => {
         return element.getName();

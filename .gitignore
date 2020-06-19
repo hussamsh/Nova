@@ -3,3 +3,4 @@ dist
 release-builds
 aws.json
 production-builds
+main.js
