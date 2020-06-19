@@ -1,11 +1,10 @@
-import { EncryptionAlgorithm } from "../interfaces/EncryptionAlgorithm";
-import { Helpers } from "./Helpers";
+import { Map } from "../interfaces/Map";
 
 //Double humped map encryption information
-export class Henon implements EncryptionAlgorithm {
+export class Henon implements Map {
     
     getName(): String {
-        return "Hénon Map Encryption";
+        return "Henon Map Encryption";
     }
     
 

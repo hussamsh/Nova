@@ -1,64 +1,74 @@
-import { app, BrowserWindow , globalShortcut, dialog, ipcMain} from "electron";
+import { app, BrowserWindow , globalShortcut, dialog, ipcMain } from "electron";
 import * as path from "path";
-const { Worker, isMainThread } = require('worker_threads');
-const isDev = require('electron-is-dev');
+import { Events } from "./helpers/Enums";
 
 let mainWindow: Electron.BrowserWindow;
-let currentWorker;
+let threadWindow : Electron.BrowserWindow;
 
 function createWindow() {
   // Create the browser window.
-  mainWindow = new BrowserWindow({
+  let settings = {
     webPreferences: {
-      preload: path.join(__dirname, "preload.js"),
+      preload: path.join(__dirname, "./dist/preload.js"),
       nodeIntegration: true,
+      nodeIntegrationInWorker: true,
     },
     width: 1200,
     height: 700,
     minWidth : 1200,
     minHeight : 700,
     frame : false,
-  });
+  };
+
+  if(!(process.platform == "win32" || process.platform == "darwin")) {
+    settings["icon"] = path.join(__dirname , "app/assets/images/nova.png");
+  }
+
+  mainWindow = new BrowserWindow(settings);
 
   // and load the index.html of the app.
-  mainWindow.loadFile(path.join(__dirname, "../app/index.html"));
+  mainWindow.loadFile(path.join(__dirname, "./app/index.html"));
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools();
 
+
+  mainWindow.on('close' , () =>{
+    
+    if(threadWindow){
+      ipcMain.removeAllListeners();
+      threadWindow.removeAllListeners();
+      threadWindow.destroy();
+      threadWindow = null;
+    }
+
+  })
   // Emitted when the window is closed.
   mainWindow.on("closed", () => {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
+    
     mainWindow = null;
   });
 
-  globalShortcut.register('CommandOrControl+R', function() {
-		mainWindow.reload()
-  })
+  // globalShortcut.register('CommandOrControl+R', function() {
+	// 	mainWindow.reload()
+  // })
   
-  globalShortcut.register('CommandOrControl+W', function() {
-		mainWindow.close()
-  })
+  // globalShortcut.register('CommandOrControl+W', function() {
+	// 	mainWindow.close()
+  // })
   
-  globalShortcut.register('CommandOrControl+Shift+I', function() {
-		mainWindow.webContents.openDevTools();
-  })
+  // globalShortcut.register('CommandOrControl+Shift+I', function() {
+	// 	mainWindow.webContents.openDevTools();
+  // })
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", createWindow);
-
-app.on('before-quit' , (event) => {
-  if(currentWorker){
-    currentWorker.removeAllListeners('message');
-    currentWorker.removeAllListeners('exit');
-    currentWorker.terminate();
-  }
-});
 
 // Quit when all windows are closed.
 app.on("window-all-closed", () => {
@@ -76,6 +86,8 @@ app.on("activate", () => {
     createWindow();
   }
 });
+
+app.allowRendererProcessReuse = false
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
@@ -101,92 +113,74 @@ ipcMain.on('select-dirs', async (event, arg) => {
 */
 ipcMain.on('crypto' , (event , args) => {
 
-  /* 
-    Set 2 callbacks for cryptographic functions 
-    1) First - is the onProgress which updates the progress of the current operation
-    2) Second - is the onFinish which triggers that the operation has finsihed and the worker thread is idle and available
-  */
-  let onProgress = (progress : number) => {
-    event.reply('progress' , progress);
-  };
-
-  let onFinish = () => {
-    event.reply('finished');
-    currentWorker.removeAllListeners('message');
-    currentWorker.removeAllListeners('exit');
-    currentWorker = null;
-  };
-
-   //Parameters that is unique to the current cryptographic algorithm
-   //Restructure the input 
+    //Parameters that is unique to the current c`ryptographic algorithm
+    //Restructure the input 
    let parameters = new Object();
    args["inputParams"].forEach((element) => {
       parameters[element.name] = element.value;
    });
 
-  //Data needed for the worker thread module
   let data = {
-    workerData : {
+      operation : args["operation"],
       algorithm : args["selectedAlgorithm"],
       parameters : parameters,
-      inputPath : args["inputPath"],
+      imagePath : args["inputPath"],
       outputFolder : args["outputPath"],
       optimize : args["optimizeImage"]
-    }
   };
-
-  //Check if current process is in the main thread - main.js is always on main thred but it's a good practice to check nevertheless 
-  if(isMainThread){
-
-    //Check if the requested opeartion is encrypt or decrypt in order in instantiate the correct worker module 
-    if(args["operation"] == "encrypt"){
-      currentWorker = new Worker(getScriptsDir() + 'Encrypt.js', data);
-    } else if (args["operation"] == "decrypt") {
-      currentWorker = new Worker(getScriptsDir() + 'Decrypt.js', data);  
+  
+  threadWindow = new BrowserWindow({
+    show: false,
+    parent: mainWindow,
+    webPreferences: {
+        preload: path.join(__dirname, "./dist/preload.js"),
+        nodeIntegration: true,
+        nodeIntegrationInWorker: true,
+        nodeIntegrationInSubFrames: true,
+        devTools: true,
+        backgroundThrottling: false
     }
+  });
 
-    // Listeners for work progress / finish of the worker thread, each listener is tied to the corresponding callback defined above
-    currentWorker.on('message' , data => {
-        switch (data.type) {
-          case "progress":
-            onProgress(data.progress);            
-            break;
-          case "invalid-henon":
-            event.reply('invalid-henon');
-            break;
-        }
-    });
+  threadWindow.loadFile(path.join(__dirname, "./app/empty.html"));
 
-    currentWorker.on('exit' , code =>{
-        onFinish();
-    });
+  ipcMain.on(Events.PROGRESS , (subEvent , message) => {
+    event.reply(Events.PROGRESS , message);
+  });
 
-  }
+  ipcMain.on(Events.FINISHED, () =>{
+    threadWindow.destroy();
+  });
+
+  ipcMain.on(Events.FAILED , () => {
+    threadWindow.destroy();
+    event.reply(Events.FAILED);
+  });
+
+  threadWindow.webContents.once('did-finish-load' , () => {
+
+    threadWindow.webContents.send('crypto' , data);
+
+  });
+
+  threadWindow.on('closed', () => {
+    event.reply(Events.FINISHED);
+
+    ipcMain.removeAllListeners(Events.FAILED);
+    ipcMain.removeAllListeners(Events.FINISHED);
+    ipcMain.removeAllListeners(Events.PROGRESS);
+    threadWindow = null;
+  });
 
 });
 
 
 // Listener for the canceling the current operation 
-ipcMain.on('cancel' , (event , args) => {
+ipcMain.on(Events.CANCELED , (event , args) => {
   
-    //Simply terminates the current worker thread 
-
-    if(currentWorker){
-      currentWorker.terminate();
-    }
-
-});
-
-
-// Return scripts directory for each target platform
-function getScriptsDir(){
-
-  if( isDev ) {
-    return "./dist/";
-  } else if(process.platform === "darwin"){
-    return "./Contents/Resources/";
-  }else{
-    return "./resources/";
+  //Simply terminates the current worker thread 
+  if(threadWindow){
+    threadWindow.destroy();
   }
 
-}
+});

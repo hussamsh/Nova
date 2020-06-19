@@ -1,8 +1,7 @@
-import { EncryptionAlgorithm } from "../interfaces/EncryptionAlgorithm";
-import { Helpers } from "./Helpers";
+import { Map } from "../interfaces/Map";
 
 //Double humped map encryption information
-export class DH implements EncryptionAlgorithm {
+export class DH implements Map {
     
     getName(): String {
         return "Double Humped Map Encryption";

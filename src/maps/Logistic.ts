@@ -1,7 +1,7 @@
-import { EncryptionAlgorithm } from "../interfaces/EncryptionAlgorithm";
+import { Map } from "../interfaces/Map";
 
 //Logistic map encryption information
-export class Logistic implements EncryptionAlgorithm{
+export class Logistic implements Map{
     
     getName(): String {
         return "Logistic Map Encryption";

@@ -1,15 +1,25 @@
-![Tests](https://github.com/hussamsh/Nova/workflows/Tests/badge.svg)
-    
+
+<img src="app/assets/images/banner.png" width="15000">
+
 <!-- PROJECT LOGO -->
 <br />
 
 <p align="center">
 
-  <a href="https://github.com/hussamsh/Nova">
-    <img src="./app/assets/images/nova.png" alt="Logo" width="160" >
+<p align="center">
+
+  <a aria-label="Hossam logo" href="http://hossamsherif.com">
+    <img src="app/assets/images/madebyhos.png" width="150">
   </a>
 
-<b><h1 align="center">NOVA</h1></b>
+ </p>
+
+ <div align="center">
+
+  ![Build](https://github.com/hussamsh/Nova/workflows/Build/badge.svg)
+  ![CI](https://github.com/hussamsh/Nova/workflows/CI/badge.svg)
+
+  </div>
 
   <p align="center">
     A cryptography application for images based on chaotic maps
@@ -36,6 +46,7 @@
   - [Remarks](#remarks)
 - [Security](#security)
 - [Examples](#examples)
+- [Valid inputs](#valid-inputs)
 - [Roadmap](#roadmap)
 - [Development](#development)
   - [Prerequisites](#prerequisites)
@@ -47,7 +58,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-Nova's idea is to become a software equivilant for a part of my research on hardware implementations of chaotic ciphers, it utilizes `chaotic maps` and pixel by pixel encrpytion algorithms to cipher images.
+Nova's idea is to become a software equivalent for a part of my research on hardware implementations of chaotic ciphers, it utilizes `chaotic maps` and pixel by pixel encryption algorithms to cipher images.
 
 I have already published part of my research if you would like to read more
 
@@ -60,12 +71,9 @@ I have already published part of my research if you would like to read more
 * **Logistic map** 
   Based on Robert May's [work](https://www.researchgate.net/publication/237005499_Simple_Mathematical_Models_With_Very_Complicated_Dynamics) back in 1976, the logistic map is the most iconic and heavily researched chaotic maps in his history.
 * **Double humped map**
-  Popularized by [Coiteux](https://core.ac.uk/download/pdf/61733598.pdf) in 2014, the double humped map shows a double hump in it's first iteration - hence the name - and exhibits some unique behavior that mkes it highly suitable for cryptogragic operations.
+  Popularized by [Coiteux](https://core.ac.uk/download/pdf/61733598.pdf) in 2014, the double humped map shows a double hump in it's first iteration - hence the name - and exhibits some unique behavior that mkes it highly suitable for cryptographic operations.
 * **Hénon map**
     Another widely recognized map, introduced by Micheal Hénon as a simplified model of the Poincaré section of the Lorenz model. 
-<!-- **To avoid retyping too much info. Do a search and replace with your text editor for the following:** !-->
-<!-- `github_username`, `repo`, `twitter_handle`, `email`  -->
-
 
 
 ### Built With
@@ -78,44 +86,39 @@ I have already published part of my research if you would like to read more
 ## Getting Started
 
 ### Download
-Download the lateset stable distribution for your OS.
+Download the latset stable distribution for your OS.
 
-[![windows 10][windows]](https://example.com) 
-[![macos][macos]](https://example.com) 
-[![linux][linux]](https://example.com) 
+[![windows 10][windows]](https://s3.eu-central-1.amazonaws.com/com.hossamsherif.nova/release-builds/nova-windows.zip) 
+[![macos][macos]](https://s3.eu-central-1.amazonaws.com/com.hossamsherif.nova/release-builds/nova-macOs.zip) 
+[![linux][linux]](https://s3.eu-central-1.amazonaws.com/com.hossamsherif.nova/release-builds/nova-linux.zip) 
 
 ### Usage
+
+See the attached gif above.
 
 **Step 1 )**  Choose the desired image for encryption / decryption by drag-drop or clicking browse in the designated area. 
 
 
 **Step 2 )**  Enter the desired params for your choosen map as well as an output directory for the processed image.
 
-<!-- <img src="./app/assets/images/choose-param.png" alt="Logo" height="400px" > -->
-
-<!-- [![Product Name Screen Shot][params-screenshot]]() -->
-
-
 **Step 3 )**  Press Encrypt / Decrypt and wait for your image to be processed. Once finished you will find the processed image in the output directory with a suffix of either _encrypted / _decrypted.
 
 
 ### Remarks
 
-* When choosing an image it's a good idea to compress / resize the image as much as possible. Especially resizing the image will yield a much better performance as the number of pixel is inversly propotional with the time needed for encryption.
+* It is highly recommended to always turn on the resize option mainly because encryption performance is inversly propotional with the number of pixels an image has. The only time you need to disable resizing is when pixel information is critical but that will result in a much reduced perfomance.
   
-* Make sure that the values chosen as input makes since for the chosen map, not any two values will suffice. Each chaotic map has it's own ranges that it can operate in. Refer to [this page]() to learn more.
+* Values choosen for each map must be valid see this [section](#valid-inputs) to learn more.
 
-* Be mindful of what parameters you use for encrypting an image and write them down or memorize them as any slight change will not yield a correct decryption of an image you need to enter the <b>exact</b> numbers you used for encryption, i.e ![3.725 \neq 3.724](https://render.githubusercontent.com/render/math?math=3.725%20%5Cneq%203.724).
-* For the Henon map there is no way - as far as I have researched - to check wether the initial parameters will diverge to the attractor or infinity, therfore the encryption is stopped anytime the sequence diverges to infinity. 
+* Make sure when decrypting to enter the exact same values used for encryption, any simple variation or mismatch will result in decryption not being successful.
+
 ## Security
 
 One aspect of measuring the security of any encrypton is called `key space analysis` which is simply the number of keys - permutations - that an attacker has to through in order to find the parameters your are using.
 
-A map like the double humped map has three input parameters at 64 bits length yields it's size to be 192 bits long which constitues a key space of ![2^{192} = 10^{57}](https://render.githubusercontent.com/render/math?math=2%5E%7B192%7D%20%3D%2010%5E%7B57%7D) keys in total.
+A map like the double humped map has three input parameters at 64 bits length yields it's size to be 192 bits long which constitues a key space of ![2^{192} = 10^{57}](https://render.githubusercontent.com/render/math?math=2%5E%7B192%7D%20%3D%2010%5E%7B57%7D) keys in total which is large enough to resist any kind of brute force attackes. (infact ![10^{57}](https://render.githubusercontent.com/render/math?math=10^57) is larger than the total number of atoms in our galaxy!) 
 
-Lets put this into prespective. Our entire solar systems has about ![10^{56}](https://render.githubusercontent.com/render/math?math=10%5E%7B56%7D) atoms which means that an attacker that can harness the power of our solar system and make every single atom calculate one key of the map, will be an order of magnitude short of achieving his goal. 
-
-Of course there are other aspects of measuring security for an encryption system such as entropy, key sensitivity analysis, differential attacks ... etc. For a thourgh analysis of our Double humped map example, read this [journal](https://www.sciencedirect.com/science/article/pii/S2090123218300195)
+Of course there are other aspects of measuring security for an encryption system such as entropy, key sensitivity analysis, differential attacks ... etc. For a thorough analysis of our Double humped map example, read this [journal](https://www.sciencedirect.com/science/article/pii/S2090123218300195)
 
 
 ## Examples
@@ -126,11 +129,31 @@ Of course there are other aspects of measuring security for an encryption system
 |<img src="./app/assets/images/ruby.jpg" width="300px" >| <img src="./app/assets/images/ruby_enc.jpg" width="300px"> |
 
 
+## Valid inputs
 
+Each chaotic map has certain valid ranges that it can operate within. For successful encryption, you need to choose values such that the ouptut of the map will be chaotic.
+
+* Logistic map
+  
+  ![\lambda \in \[0,4\], \lambda_{chaos} > 3.6](https://render.githubusercontent.com/render/math?math=%5Clambda%20%5Cin%20%5B0%2C4%5D%2C%20%5Clambda_%7Bchaos%7D%20%3E%203.6)
+
+  ![x \in \[0,1\]](https://render.githubusercontent.com/render/math?math=x%20%5Cin%20%5B0%2C1%5D)
+
+* Double humped map
+  
+  ![\lambda \in \[0, \frac{8}{c^3}\]](https://render.githubusercontent.com/render/math?math=%5Clambda%20%5Cin%20%5B0%2C%20%5Cfrac%7B8%7D%7Bc%5E3%7D%5D)
+  
+  ![x \in \[0, 2c\]](https://render.githubusercontent.com/render/math?math=x%20%5Cin%20%5B0%2C%202c%5D)
+
+  exact chaotic regions will depend on ![c](https://render.githubusercontent.com/render/math?math=c), as an example for  ![c = 1, \lambda_{chaos} > 3.2](https://render.githubusercontent.com/render/math?math=c%20%3D%201%2C%20%5Clambda_%7Bchaos%7D%20%3E%203.2).
+
+* For the Henon map there is no way - as far as I have researched - to check wether the initial parameters will diverge to the attractor or infinity, therfore the encryption is stopped anytime the sequence diverges to infinity. 
+  
 ## Roadmap
 
 * Adding more maps to choose from.
-* Histograms and comaprisons right inside the app
+* Histograms and comaprisons right inside the app.
+* Encryption of formats and files other than images.
 
 
 ## Development
@@ -172,20 +195,22 @@ If you would like to develop a new feature or see how the code is running under 
 
 ## C++ implementation
 
-I have implemented this project in c++ which run from CLI and perofrmes at 3 - 5 times the speed of this implementation in javascript. Check it out in this [github repo](). 
+I have implemented this project in c++ which runs from CLI and perofrms at 3 - 5 times the speed of this implementation in javascript. Check it out in this [github repo](https://github.com/hussamsh/nova-cpp). 
 
 
 ## License
 
-TODO
+GNU GENERAL PUBLIC LICENSE Version 2.
+
+ [Read more](https://github.com/hussamsh/Nova/blob/hossam-dev/LICENSE)
 
 ## Contact
 
-TODO
+hossamsherifmostafa@gmail.com
 
 
 
-[product-screenshot]: ./app/assets/images/screenshot.png
+[product-screenshot]: ./app/assets/images/nova-capture.gif
 [params-screenshot]: ./app/assets/images/choose-param.png
 [windows]: ./app/assets/images/microsoft.png
 [macos]: ./app/assets/images/macos.png

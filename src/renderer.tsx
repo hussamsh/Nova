@@ -7,14 +7,15 @@ import ReactDOM from 'react-dom';
 import TopControlButtons from "./components/TopControlButtons";
 import RightPanel from './components/RightPanel';
 import ImageInput from "./components/ImageInput";
-import Palette  from "./palette";
-import EncryptionTypes from './nova/EncryptionTypes';
+import Palette  from "./helpers/palette";
+import Maps from './maps/Maps';
 import Button from './components/Button';
 import styled from 'styled-components';
 import fs from 'fs';
 import { ipcRenderer } from "electron";
 import { Spinner } from "./components/Spinner";
-import { Helpers } from './nova/Helpers';
+import { Helpers } from './helpers/Helpers';
+import { Events } from './helpers/Enums';
 
 //References to all react components in view
 let controlPanelRef = React.createRef<RightPanel>();
@@ -89,7 +90,7 @@ ReactDOM.render(
             <RightPanelWrapper className="col-3">
 
                 <div className="right-wrapper" style={{padding:"15px"}}>
-                    <RightPanel availableAlgorithms={EncryptionTypes.algorithms} ref={controlPanelRef} />
+                    <RightPanel availableAlgorithms={Maps.all} ref={controlPanelRef} />
 
                     <ButtonWrapper>
                         <Button ref={encryptButtonRef} onClick={() => onEcnryptButtonClicked()}> <i className="fas fa-fingerprint"></i> Encrypt</Button>    
@@ -153,7 +154,7 @@ ReactDOM.render(
     }
 
     function onCancelOperation(){
-        ipcRenderer.send('cancel');
+        ipcRenderer.send(Events.CANCELED);
     }
 
     function validateInput() : boolean {
@@ -172,7 +173,7 @@ ReactDOM.render(
 
         if (inputValid){
             switch(currentState["selectedAlgorithm"]){
-                case EncryptionTypes.DH.getName(): 
+                case Maps.DH.getName(): 
                 {
                     let r = +(parameters[0].value);
                     let x = +(parameters[1].value);
@@ -192,7 +193,7 @@ ReactDOM.render(
                 }
                 
                 break;
-                case EncryptionTypes.Logistic.getName():
+                case Maps.Logistic.getName():
                 {
                     let x = +(parameters[0].value);
                     let r = +(parameters[1].value);
@@ -207,26 +208,6 @@ ReactDOM.render(
                         inputValid = false;
                     }
 
-                }
-                break;
-                case EncryptionTypes.Henon.getName():
-                {
-                    // let x = +(parameters[0].value);
-                    // let y = +(parameters[1].value);
-
-                    // if(x < -1.5 || x > 1.5 ){
-                    //     controlPanelRef.current.onInputValidationFail(parameters[0].name, "x ∈ [-1.5,1.5]");
-                    //     inputValid = false;
-                    // }
-
-                    // if(y < -0.4 || y > 0.4 ){
-                    //     controlPanelRef.current.onInputValidationFail(parameters[1].name, "y ∈ [0.4,0.4]");
-                    //     inputValid = false;
-                    // }
-
-                    // console.log(Helpers.math.evaluate('sqrt( (y+1) / (1.4) )' , { y : y } ).toString());
-
-                    
                 }
                 break;
             }
@@ -256,16 +237,15 @@ ReactDOM.render(
         return inputValid;
     }
 
-    ipcRenderer.on('finished' , (event , args) => {
-        console.log("Finished");
+    ipcRenderer.on(Events.FINISHED , (event , args) => {
         onCryptoOperationEnded();
     });
 
-    ipcRenderer.on('progress' , (event , progress) => {
+    ipcRenderer.on(Events.PROGRESS , (event , progress) => {
         spinnerRef.current.setText(progress);
     });
 
-    ipcRenderer.on('invalid-henon' , (event , args) => {
+    ipcRenderer.on(Events.FAILED , (event , args) => {
 
         let currentState = controlPanelRef.current.getInputData();
         let parameters = currentState["inputParams"];

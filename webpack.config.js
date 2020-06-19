@@ -3,7 +3,8 @@
 const path = require("path");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const nodeExternals = require('webpack-node-externals');
-
+const EventHooksPlugin = require('event-hooks-webpack-plugin');
+const shebangLoader = require('shebang-loader');
 
 const commonConfig = {
     node: {
@@ -18,14 +19,16 @@ const commonConfig = {
   
     // Where to compile the bundle
     // By default the output directory is `dist`
-    output: {
-      path: path.resolve(__dirname, 'dist'),
-      filename: '[name].js'
-    },
+
   
     // Supported file loaders
     module: {
       rules: [
+        {
+          test: /\.(js|jsx)$/,
+          exclude: /node_modules/,
+          loader: ["shebang-loader"]
+        },
         {
           test: /\.(ts|tsx)$/,
           exclude: /node_modules/,
@@ -63,7 +66,6 @@ const commonConfig = {
         }
       ]
     },
-  
     // File extensions to support resolving
     resolve: {
       extensions: [".ts", ".tsx", ".js" , ".css" , ".png"], 
@@ -78,34 +80,68 @@ module.exports = [
     Object.assign(
         {
           target: 'electron-main',
-          entry: { main: './src/main.ts' }
+          entry: { main: './src/main.ts' },
+          output: {
+            path: path.resolve(__dirname, '.'),
+            filename: '[name].js'
+          },
         },
         commonConfig),
       Object.assign(
         {
           target : 'electron-renderer',
-          entry: { renderer: './src/renderer.tsx' },
+          entry: { 
+            renderer: './src/renderer.tsx',
+            thread : './src/threads/CryptoThread.ts',
+          },
           plugins: [new HtmlWebpackPlugin({
-              template : "./app/index.html"
-          })]
+              template : "./app/index.html",
+          }),
+          new HtmlWebpackPlugin({
+            template : "./app/empty.html",
+          })],
+          output: {
+            path: path.resolve(__dirname, 'dist'),
+            filename: '[name].js'
+          },
         },
         commonConfig),
         Object.assign(
             {
               target : 'electron-preload',
               entry: { preload: './src/preload.ts' },
+              output: {
+                path: path.resolve(__dirname, 'dist'),
+                filename: '[name].js'
+              },
             },
             commonConfig),
         Object.assign(
           {
             target : 'node',
             entry: { 
-              Decrypt : './src/nova/Decrypt.ts',
-              Encrypt : './src/nova/Encrypt.ts' ,
-              tests : './src/test/tests.ts',
               release : './src/cli/release.ts',
+            },
+            output: {
+              path: path.resolve(__dirname, 'dist'),
+              filename: '[name].js'
             },
           },
           commonConfig),
+          Object.assign(
+            {
+              target : 'node',
+              entry: { 
+                dh : './src/tests/DH.ts',
+                logitsic : './src/tests/Logistic.ts',
+                henon : './src/tests/Henon.ts',
+                general : './src/tests/General.ts',
+              },
+              output: {
+                path: path.resolve(__dirname, 'dist/tests'),
+                filename: '[name].js'
+              },
+            },
+            commonConfig),
 
 ]

@@ -1,6 +1,5 @@
 'use strict';
 const readline = require('readline');
-// const chalk = require('chalk');
 const cliCursor = require('cli-cursor');
 const cliSpinners = require('cli-spinners');
 const logSymbols = require('log-symbols');
