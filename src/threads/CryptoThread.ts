@@ -1,7 +1,7 @@
 
 import { ipcRenderer } from "electron";
 import { Events } from "../helpers/Enums";
-import { EncryptionOperation , DecryptionOperation, Operation } from "../operations";
+import { EncryptionOperation , DecryptionOperation, Operation } from "../Operations";
 
 ipcRenderer.on('crypto' , (event , input) => {
 
