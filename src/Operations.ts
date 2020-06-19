@@ -117,7 +117,7 @@ export abstract class Operation {
                 image.bitmap.data[idx + 3] = pixel.a;   
 
                 //Update the main thread with the progress
-                if( this.progressCallback ) { this.progressCallback("PROGRESS " + Math.floor((( index++ / numPixels ) * 100)) + " %") }
+                if( this.progressCallback ) { this.progressCallback("Progress " + Math.floor((( index++ / numPixels ) * 100)) + " %") }
             });
             
             //When finished , write the new image data to the output path

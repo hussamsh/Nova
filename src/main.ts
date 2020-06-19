@@ -26,7 +26,7 @@ function createWindow() {
   // Open the DevTools.
   // mainWindow.webContents.openDevTools();
 
-  
+
   mainWindow.on('close' , () =>{
     
     if(threadWindow){
@@ -46,17 +46,17 @@ function createWindow() {
     mainWindow = null;
   });
 
-  globalShortcut.register('CommandOrControl+R', function() {
-		mainWindow.reload()
-  })
+  // globalShortcut.register('CommandOrControl+R', function() {
+	// 	mainWindow.reload()
+  // })
   
-  globalShortcut.register('CommandOrControl+W', function() {
-		mainWindow.close()
-  })
+  // globalShortcut.register('CommandOrControl+W', function() {
+	// 	mainWindow.close()
+  // })
   
-  globalShortcut.register('CommandOrControl+Shift+I', function() {
-		mainWindow.webContents.openDevTools();
-  })
+  // globalShortcut.register('CommandOrControl+Shift+I', function() {
+	// 	mainWindow.webContents.openDevTools();
+  // })
 }
 
 // This method will be called when Electron has finished
@@ -80,6 +80,8 @@ app.on("activate", () => {
     createWindow();
   }
 });
+
+app.allowRendererProcessReuse = false
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.

@@ -1,6 +1,6 @@
 {
   "name": "nova",
-  "version": "0.0.1",
+  "version": "0.8.2",
   "main": "main.js",
   "description": "Desktop application that implements different kinds of cryptographic algorithms",
   "scripts": {
@@ -12,19 +12,6 @@
     "release-win": "electron-packager . Nova --overwrite --asar --platform=win32 protable --arch=ia32 --icon=./app/assets/images/icon.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Nova Cryptography\" --extraResource=./dist/Encrypt.js --extraResource=./dist/Decrypt.js",
     "release-linux": "electron-packager . Nova --overwrite --asar --platform=linux protable --arch=x64 --icon=./app/assets/images/nova.png --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Nova Cryptography\" --extraResource=./dist/Encrypt.js --extraResource=./dist/Decrypt.js"
   },
-  "build": {
-    "appId": "6c2fcd40-3c77-473e-80c1-711ecd86baa2",
-    "mac": {
-      "category": "cryptography images"
-    },
-    "directories": {
-      "buildResources": "app/assets/images"
-    }
-  },
-  "files": [
-    "dist/Encrypt.js",
-    "dist/Decrypt.js"
-  ],
   "repository": "",
   "keywords": [
     "Electron",
@@ -44,7 +31,6 @@
     "html-webpack-plugin": "^4.3.0",
     "mocha-loader": "^5.0.0",
     "node-loader": "^0.6.0",
-    "spectron": "^10.0.0",
     "ts-loader": "^6.2.2",
     "tslint": "^5.20.1",
     "typescript": "^3.8.3",
@@ -66,9 +52,7 @@
     "bitset": "^5.1.1",
     "bootstrap": "^4.4.1",
     "chai": "^4.2.0",
-    "chai-as-promised": "^7.1.1",
     "cli-spinners": "^2.3.0",
-    "electron-is-dev": "^1.2.0",
     "event-hooks-webpack-plugin": "^2.1.6",
     "file-uri-to-path": "^2.0.0",
     "jimp": "^0.12.1",
@@ -79,7 +63,6 @@
     "minimist": "^1.2.5",
     "mocha": "^7.2.0",
     "node-resemble-js": "^0.2.0",
-    "ora": "^4.0.4",
     "popper.js": "^1.16.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",

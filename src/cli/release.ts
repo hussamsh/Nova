@@ -38,11 +38,7 @@ async function windowsRelease(){
         "asar" : true,
         "arch" : "ia32",
         "icon" : "./app/assets/images/icon.ico",
-        "out" : "release-builds",
-        "extraResource" : [
-            "./dist/Encrypt.js",
-            "./dist/Decrypt.js"
-        ]
+        "out" : "release-builds"
     });
 
     spinner.succeed("Generated windows release builds");
@@ -70,10 +66,6 @@ async function macRelease() {
         "arch" : "x64",
         "icon" : "./app/assets/images/nova.icns",
         "out" : "release-builds",
-        "extraResource" : [
-            "./dist/Encrypt.js",
-            "./dist/Decrypt.js"
-        ]
     });
 
     spinner.succeed("Generated mac release builds");
@@ -101,10 +93,6 @@ async function linuxRelease() {
         "arch" : "x64",
         "icon" : "./app/assets/images/nova.png",
         "out" : "release-builds",
-        "extraResource" : [
-            "./dist/Encrypt.js",
-            "./dist/Decrypt.js"
-        ]
     });
 
     spinner.succeed("Generated linux release builds");
