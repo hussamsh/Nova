@@ -7,18 +7,24 @@ let threadWindow : Electron.BrowserWindow;
 
 function createWindow() {
   // Create the browser window.
-  mainWindow = new BrowserWindow({
+  let settings = {
     webPreferences: {
       preload: path.join(__dirname, "./dist/preload.js"),
       nodeIntegration: true,
-      nodeIntegrationInWorker: true
+      nodeIntegrationInWorker: true,
     },
     width: 1200,
     height: 700,
     minWidth : 1200,
     minHeight : 700,
     frame : false,
-  });
+  };
+
+  if(!(process.platform == "win32" || process.platform == "darwin")) {
+    settings["icon"] = path.join(__dirname , "app/assets/images/nova.png");
+  }
+
+  mainWindow = new BrowserWindow(settings);
 
   // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, "./app/index.html"));
